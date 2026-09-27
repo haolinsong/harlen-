@@ -1,0 +1,9 @@
+[project]
+name = "python-learning-demos"
+version = "0.1.0"
+description = "Beginner-friendly Python demos inspired by the Python-100-Days roadmap"
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

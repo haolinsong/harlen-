@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+      继承 Spring Boot Parent：统一管理常用依赖和 Maven 插件的兼容版本，
+      因此下面的 starter 通常不需要逐个填写 <version>。
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.1</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.harlan</groupId>
+    <artifactId>rabbitmq-demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>rabbitmq-demo</name>
+    <description>RabbitMQ learning project based on the hands-on guide</description>
+
+    <properties>
+        <!-- Maven 编译器会按 Java 17 生成字节码；运行环境至少需要 JDK 17。 -->
+        <java.version>17</java.version>
+        <!-- 显式固定编码，保证中文源码注释在不同操作系统上都能正确读取。 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- 提供 Spring MVC、内嵌 Web 服务器和 REST Controller 支持。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--
+          RabbitMQ 核心依赖：包含 Spring AMQP、Spring Rabbit、RabbitTemplate、
+          @RabbitListener、RabbitAdmin 和 RabbitMQ Java Client。
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <!-- 提供 /actuator/health 等运维端点，用来检查应用是否正常启动。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!--
+          测试工具集合，包含 JUnit 5、AssertJ、Mockito 和 Spring Test。
+          scope=test 表示它们只参与测试，不会进入正式运行时 classpath。
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 支持 mvn spring-boot:run，并把应用打包为可执行 JAR。 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

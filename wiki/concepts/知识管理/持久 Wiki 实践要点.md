@@ -85,7 +85,7 @@ sources: ["raw/LLM Wiki 搭建教程 - 飞书云文档（完整正文重建版�
 | lint | 已落地 `scripts/lint.py` | `scripts/lint.py` 9 项 | 已采纳 |
 | 命名 | 中文文件名 | 英文 slug + `aliases` | 暂不改，但不许混用 |
 | 第三层 | Outputs（顶层 `outputs/`），Schema 是配置 | Outputs | 已采纳 |
-| 操作数 | 4（Ingest / Query / Lint / Add-question） | 6 | REFLECT 与 MERGE 待规模 |
+| 操作数 | 5（Ingest / 整理到笔记 / Query / Lint / Add-question） | 6 | REFLECT 与 MERGE 待规模 |
 | 护栏 | 时效衰减 + howto `verified` | 哈希 / 置信度 / 时效 / 隔离 | 哈希、置信度待规模上线 |
 | schema | `AGENTS.md` + `README.md` | 单个 `CLAUDE.md` + `USER_GUIDE.md` | 本库的双文件分工更清楚 |
 

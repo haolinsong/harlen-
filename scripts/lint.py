@@ -76,6 +76,9 @@ wiki_md = walk_md(WIKI)
 raw_md = walk_md(os.path.join(VAULT, "raw"))
 output_md = walk_md(os.path.join(VAULT, "outputs"))
 pages = {os.path.splitext(os.path.basename(p))[0]: p for p in walk_md(VAULT)}
+managed_page_names = {
+    os.path.splitext(os.path.basename(p))[0] for p in wiki_md + output_md
+}
 
 REQUIRED_COMMON = ["title", "type", "created", "updated"]
 REQUIRED_BY_TYPE = {
@@ -123,12 +126,12 @@ for path in wiki_md:
             warns.append(f"{rel(path)} 正文不足 100 字，疑似 stub")
 
     # 时效
-    vol = fm.get("domain_volatility", "medium")
+    vol = fm.get("domain_volatility", "high")
     base = fm.get("last_reviewed") or fm.get("updated") or fm.get("created")
     if base and isinstance(base, str) and re.match(r"^\d{4}-\d{2}-\d{2}$", base):
         try:
             age = (TODAY - datetime.date.fromisoformat(base)).days
-            limit = STALE_DAYS.get(vol if isinstance(vol, str) else "medium", 180)
+            limit = STALE_DAYS.get(vol if isinstance(vol, str) else "high", 90)
             if age > limit:
                 warns.append(f"{rel(path)} 已 {age} 天未复核（阈值 {limit} 天）")
         except ValueError:
@@ -137,7 +140,7 @@ for path in wiki_md:
         verified = fm.get("verified")
         if isinstance(verified, str) and re.match(r"^\d{4}-\d{2}-\d{2}$", verified):
             age = (TODAY - datetime.date.fromisoformat(verified)).days
-            if age > 180:
+            if age > 90:
                 warns.append(f"{rel(path)} 的 howto 已 {age} 天未验证，操作步骤可能失效")
 
 # ---------- 1.5 输出页（outputs/ 层） ----------
@@ -149,19 +152,29 @@ for path in output_md:
     fm = parse_fm(block)
     if fm.get("type") != "output":
         errors.append(f"{rel(path)} 的 type 应为 output")
-    for key in ["title", "type", "created"]:
+    for key in ["title", "type", "tags", "aliases", "created", "updated", "related"]:
         if key not in fm:
             errors.append(f"{rel(path)} 缺 frontmatter 字段: {key}")
+    name = os.path.splitext(os.path.basename(path))[0]
+    for alias in fm.get("aliases", []) if isinstance(fm.get("aliases"), list) else []:
+        alias_map[alias].append(name)
+    output_rel = os.path.relpath(path, os.path.join(VAULT, "outputs"))
+    top_dir = output_rel.split(os.sep, 1)[0]
+    if top_dir != "维护" and re.match(r"^\d{4}-\d{2}-\d{2}-", name):
+        errors.append(f"{rel(path)} 普通输出页不应使用日期前缀，应合并到稳定主题页")
+    if re.search(r"[\\/:*?\"<>|#^\[\]%]", name):
+        errors.append(f"文件名含禁用字符: {name}")
     if len(re.sub(r"\s", "", body)) < 100:
         warns.append(f"{rel(path)} 正文不足 100 字，输出页应能独立读懂")
 
 # ---------- 2. 链接 ----------
+link_targets = set(pages) | set(alias_map)
 inbound = defaultdict(set)
 for path in wiki_md + output_md:
     name = os.path.splitext(os.path.basename(path))[0]
     for target in set(re.findall(r"\[\[([^\]|#]+)", strip_code(read(path)))):
         target = target.strip()
-        if target not in pages:
+        if target not in link_targets:
             errors.append(f"{rel(path)} 断链: [[{target}]]")
         elif target != name:
             inbound[target].add(name)
@@ -183,7 +196,7 @@ for path in wiki_md:
     if name not in index_links:
         errors.append(f"{rel(path)} 未被 index.md 收录")
 for target in index_links:
-    if target not in pages:
+    if target not in link_targets:
         errors.append(f"index.md 收录了不存在的页面: [[{target}]]")
 for path in output_md:
     name = os.path.splitext(os.path.basename(path))[0]
@@ -194,6 +207,8 @@ for path in output_md:
 for alias, owners in alias_map.items():
     if len(set(owners)) > 1:
         errors.append(f"别名冲突: {alias} 同时指向 {', '.join(sorted(set(owners)))}")
+    if alias in managed_page_names and alias not in owners:
+        errors.append(f"别名冲突: {alias} 同时是页面名和其他页面的别名")
 for path in wiki_md:
     name = os.path.splitext(os.path.basename(path))[0]
     if re.search(r"[\\/:*?\"<>|#^\[\]%]", name):

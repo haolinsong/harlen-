@@ -1,0 +1,39 @@
+spring:
+  application:
+    # 出现在日志、Actuator 和监控指标中的应用名称。
+    name: rabbitmq-demo
+  rabbitmq:
+    # ${环境变量:默认值}：未设置环境变量时，使用冒号后的本地学习配置。
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:learner}
+    password: ${RABBITMQ_PASSWORD:learner123}
+    virtual-host: ${RABBITMQ_VHOST:/}
+
+    # correlated 模式允许每条消息携带 CorrelationData，并异步接收 Broker confirm。
+    publisher-confirm-type: correlated
+
+    # 开启 Broker 到生产者的退回通知；还需要下面的 mandatory=true 才会触发。
+    publisher-returns: true
+    template:
+      # 消息无法路由到任何 Queue 时不要静默丢弃，而是交给 ReturnsCallback。
+      mandatory: true
+    listener:
+      simple:
+        # 每个消费者最多持有 1 条未确认消息，便于观察公平分发；高吞吐场景需调优。
+        prefetch: 1
+
+        # 监听方法抛出异常时默认不重新入队，避免永久错误形成无限重试循环。
+        default-requeue-rejected: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # 只通过 HTTP 暴露健康检查和应用信息，避免开放不需要的管理端点。
+        include: health,info
+
+logging:
+  level:
+    # 显示本项目 INFO 级别日志，用于观察发布、确认、消费和死信过程。
+    com.harlan.rabbitmqdemo: INFO

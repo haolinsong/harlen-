@@ -155,3 +155,198 @@ sources: []
   - `wiki/index.md`、`README.md`：同步目录说明。
 - 影响：输出页不算 wiki 导航页，`lint` 对其要求比 wiki 页轻（`title / type / created` + `related`），但正文少于 100 字仍警告——输出页必须能独立读懂。
 - 备注：`git` 仍待 Harlan 手动 `git init`（沙箱禁止 Agent 创建 `.git`）。
+
+## [2026-09-17] schema | 时效默认改为 90 天
+
+- Harlan 决定整体时效定为 90 天（此前默认 180 天）。
+- `AGENTS.md`：`domain_volatility` 默认由 `medium` 改为 `high`（90 天复核）；稳定不变的原理页可手动标 `medium`/`low`。
+- `scripts/lint.py`：默认阈值同步为 90 天；howto 页的 `verified` 复核窗口也由 180 天改为 90 天。
+- 状态：`git` 已由 Harlan 完成 `git init` 并首次提交（commit `184178a`），此前的待办关闭。
+
+## [2026-09-17] schema | 重写 README 为完整使用手册
+
+- Harlan 要求把本库的结构、搭建思路、使用方法完整写入 README，便于理解与使用。
+- 重写为一份自包含手册：结构全景图、三层职责、五类页面、归类与命名规则、六步日常流程、常用命令、关键约定、边界、常见问题、设计由来、现状与下一步。
+- 定位仍不变：README 面向人（理解+使用），`AGENTS.md` 面向 Agent（规则），冲突时以 `AGENTS.md` 为准。
+
+## [2026-09-17] schema | 新增「整理到笔记中」：摄入 + 复习卡
+
+- 起因：Harlan 希望以后说「整理到笔记中」时，同时更新 wiki 和 outputs——他从别处拿到的知识，既想织进知识网络，也想得到一份能反复复习的成品。
+- 判断：合理，已落地为一个独立操作，与普通「摄入」区分开：普通摄入只写 wiki；「整理到笔记中」在完整摄入之外，额外产出一份复习卡到 `outputs/<技术栈>/`。
+- 复习卡定稿为四段：一句话结论 / 核心要点 / 怎么用 / 相关（链回 wiki 页）。
+- **防漂移的关键约定**：复习卡是**快照**，记录"这次整理时的理解"，不随 wiki 自动更新；wiki 页才是活源头，点复习卡里的链接回找最新版。这条写进了 `AGENTS.md`，避免"每个摄入都复制一份知识"造成的维护债。
+- 改动：`AGENTS.md`（新增 §4「整理到笔记」操作、输出页说明补上两种来源、标题由「四个操作」改为「操作」）、`README.md`（第二步新增该触发语）、`持久 Wiki 实践要点`（操作数更新为 5）。
+
+## [2026-09-23] query | 当前项目工作原理
+
+- 触发：Harlan 要求读取当前项目并了解项目工作原理。
+- 方法：读取 `AGENTS.md`、`README.md`、`scripts/lint.py`、`wiki/index.md`、`wiki/overview.md`、`wiki/QUESTIONS.md`、`wiki/log.md` 与核心知识管理概念页。
+- 结论：本项目是三层结构的持久 Wiki：`raw/` 保存事实来源，`wiki/` 由 Agent 维护知识网络，`outputs/` 保存给 Harlan 复习的问答与审计结论；当前结构已成型，但技术内容仍为零。
+- 新建：[[2026-09-23-当前项目工作原理]]（输出页）
+- 更新：[[index]]、本文件
+
+## [2026-09-23] query | Java 消息队列概览与选型
+
+- 触发：Harlan 询问 Java 方面有哪些消息队列。
+- 方法：先检查 `wiki/index.md`，确认库内没有相关技术页面；随后核对 Spring Boot、RabbitMQ、Apache Kafka、Apache RocketMQ、Apache Pulsar、Apache ActiveMQ Artemis 与 Jakarta Messaging 官方文档。
+- 结论：Java 常见选择包括 RabbitMQ、Kafka、RocketMQ、Pulsar 和 ActiveMQ Artemis；选型首先要区分业务任务队列与可回放事件流，并结合路由、吞吐、延时/事务消息、JMS 兼容和运维能力判断。
+- 新建：[[2026-09-23-Java消息队列概览与选型]]（输出页）
+- 更新：[[index]]、本文件
+
+## [2026-09-23] query | RabbitMQ 入门实战学习文档
+
+- 触发：Harlan 希望按照消息队列学习方案先上手 RabbitMQ，并生成学习文档。
+- 方法：基于 RabbitMQ 4.x、Spring Boot 与 Spring AMQP 官方文档，按心智模型、最小收发、工作队列、Exchange 路由、可靠性、死信和幂等逐步组织练习。
+- 结论：第一阶段以 Docker + Spring Boot 跑通订单通知链路；第二阶段通过 publisher confirm、publisher return、consumer ack、DLX 和数据库唯一键建立可靠性认知。
+- 新建：[[2026-09-23-RabbitMQ入门实战]]（输出页）
+- 更新：[[index]]、本文件
+
+## [2026-09-23] query | 补充 RabbitMQ 架构介绍
+
+- 触发：Harlan 要求在 RabbitMQ 入门实战中增加架构介绍。
+- 方法：核对 RabbitMQ 4.x 官方 Connections、Channels、Virtual Hosts、Clustering、Classic Queues、Quorum Queues 与 Streams 文档。
+- 结论：新增单节点组件图、Connection/Channel 分层、Virtual Host 与元数据、三类消息数据结构、集群复制边界和消息完整生命周期；明确 Cluster 不会自动复制 Classic Queue 消息。
+- 更新：[[2026-09-23-RabbitMQ入门实战]]、[[index]]、本文件
+
+## [2026-09-24] query | 创建 RabbitMQ Spring Boot 配套项目
+
+- 触发：Harlan 要求在当前目录新建 `code/` 并生成基于入门实战的 Spring Boot RabbitMQ 项目。
+- 方法：使用 Spring Boot 4.1.1、Java 17、Spring AMQP 与 RabbitMQ 4.x，创建独立 Maven 工程和 Docker Compose 环境。
+- 结论：项目实现 Direct Exchange、通知与审计双 Queue、JSON 事件、publisher confirm/return、手动 ack、死信队列、失败模拟和内存幂等示例。
+- 新建：`code/rabbitmq-demo/`
+- 更新：[[2026-09-23-RabbitMQ入门实战]]、本文件
+
+## [2026-09-24] query | Codex旧对话提供商缺失排障
+
+- 只读检查配置、任务数据库和会话元数据，确认四个旧对话仍引用未定义的 deepseek 提供商。
+- 输出恢复配置与改用 ChatGPT 的处理路径，未修改应用配置或历史记录。
+- 新增：[[2026-09-24-Codex旧对话提供商缺失排障]]；更新：[[index]]、本文件。
+
+## [2026-09-24] query | 验证 RabbitMQ Spring Boot 配套项目
+
+- 使用 IntelliJ IDEA 内置 Maven 编译项目并执行测试，3 个测试全部通过；同时生成 Maven Wrapper 3.9.11。
+- 当前环境未安装 Docker，未执行真实 RabbitMQ Broker 联调；项目保留 `compose.yaml` 与完整联调步骤供本地运行。
+- 更新：`code/rabbitmq-demo/`、本文件
+
+## [2026-09-24] schema | 新增 code 配套项目目录
+
+- 起因：学习文档开始配套可运行工程，需要明确代码在知识库中的位置与维护边界。
+- 约定：`code/` 存放学习与验证项目，不属于 Raw sources、The wiki、Outputs 三层内容；项目应自带运行说明、可复现构建配置和必要测试，不提交秘密信息与构建产物。
+- 更新：`AGENTS.md`、`README.md`、本文件
+
+## [2026-09-24] query | Spring AMQP 与 Maven Wrapper
+
+- 触发：Harlan 询问 RabbitMQ 示例项目中 Spring AMQP 与 Maven Wrapper 的定位和用法。
+- 方法：对照项目依赖、连接配置、拓扑声明、生产者、消费者与 Wrapper 属性，并核对 Spring Boot、Spring AMQP 和 Apache Maven 官方文档。
+- 结论：Spring AMQP 是应用运行时的 RabbitMQ 编程抽象与实现；Maven Wrapper 是构建期的 Maven 版本引导器，两者分别保证消息代码易用和构建环境可复现。
+- 新建：[[2026-09-24-Spring-AMQP与Maven-Wrapper]]（输出页）
+- 更新：[[index]]、本文件
+
+## [2026-09-24] schema | 输出页改为按主题持续维护
+
+- 起因：日期型、一问一页的输出会让同一学习主题散落在多个文件中，不利于连续学习。
+- 新规则：普通输出页使用稳定主题名，不加日期前缀；新问题先按文件名、标题、别名和正文标题做主题对齐，命中就更新原页。一次问题可更新多个独立主题，不创建临时拼盘页；只有体检和阶段审计等时间型维护产物保留日期。
+- 迁移：5 篇输出页全部改为主题名；Spring AMQP 内容并入 [[RabbitMQ入门实战]]，Maven Wrapper 独立为 [[Maven-Wrapper]]，其余页面只去除日期前缀。
+- 兼容：旧文件名写入 `aliases`，历史 log 链接仍可解析；`scripts/lint.py` 新增普通输出页日期前缀、完整 frontmatter 和输出 aliases 检查。
+- 更新：`AGENTS.md`、`README.md`、`scripts/lint.py`、[[index]]、[[当前项目工作原理]]、`code/rabbitmq-demo/README.md`、本文件
+
+## [2026-09-24] query | 为 RabbitMQ 示例项目补充新手注释
+
+- 触发：Harlan 希望通过详细代码注释理解 `code/rabbitmq-demo`，当前学习阶段为新手。
+- 方法：按消息生命周期为应用入口、拓扑、事件模型、生产者、发布回调、两个消费者、幂等存储、HTTP 接口和测试补充中文 JavaDoc 与关键行注释；同时解释 Maven 依赖、Docker Compose 和 Spring 配置。
+- 边界：保留 Maven Wrapper 生成脚本原样，不手工修改工具生成代码；README 新增建议阅读顺序。
+- 验证：使用 Maven 完成编译和 3 个测试，全部通过。
+- 更新：`code/rabbitmq-demo/`、[[RabbitMQ入门实战]]、本文件
+
+## [2026-09-24] query | RabbitMQ 核心名词详解
+
+- 触发：Harlan 希望详细理解 Broker、Exchange、Queue、Binding 及相关 RabbitMQ 名词。
+- 方法：基于 RabbitMQ 官方 AMQP 0-9-1 Model、Exchanges、Queues、Virtual Hosts、Confirms、DLX 与 TTL 文档，按消息生命周期组织概念，并映射到现有 Spring Boot 示例项目。
+- 结论：新增 Broker/Node/Cluster、Publisher、Message、Exchange 类型、Routing Key、Binding、Queue 属性与状态、Consumer、ACK/NACK、Prefetch、Confirm/Return、DLX/DLQ、TTL/Policy、Virtual Host/User/Permission 的定义、边界和易混淆对照。
+- 更新：[[RabbitMQ入门实战]]、[[index]]、本文件
+
+## [2026-09-24] query | 归档四个DeepSeek旧对话
+
+- 用户要求改用 ChatGPT 并删除四个旧对话；现有接口仅支持归档，已归档全部四个任务并复核状态。
+- 永久删除未执行，历史保留；默认模型配置保持不变。
+- 更新：[[2026-09-24-Codex旧对话提供商缺失排障]]、本文件。
+
+## [2026-09-25] query | Binding Key 与 Exchange-Queue 映射关系
+
+- 触发：Harlan 询问不同 Exchange 类型如何解释 Binding Key，以及 Exchange 是否固定对应多个 Queue。
+- 结论：Binding Key 是 Binding 上的匹配规则；Direct 将其视为完整值，Topic 将其视为模式，Fanout 忽略它，Headers 改用 Binding arguments。Binding 本身就是 Exchange 与 Queue 的映射，双方是可动态配置的多对多关系，不是 Exchange 内置的固定 Queue 列表。
+- 补充：同一消息匹配多个不同 Queue 时各写入一份；同一 Queue 的多条 Binding 同时匹配时，该 Queue 仍只写入一份。
+- 更新：[[RabbitMQ入门实战]]、本文件。
+
+## [2026-09-25] query | RabbitMQ 拒绝与再次投递
+
+- 触发：Harlan 询问 Consumer 什么时候拒绝消息，以及 Reject、Requeue、Delivery Tag 和 Redelivered 与再次投递的关系。
+- 结论：Reject/NACK 是否定当前 Delivery；`requeue=true` 或 Channel、Connection 在手动 ACK 前关闭都会使未确认消息重新入队，并可能交给原 Consumer 或其他 Consumer。Delivery Tag 只标识 Channel 内的一次投递，Redelivered 只表示 Broker 对同一 Queue 消息的重新投递，二者都不能代替业务幂等键。
+- 补充：永久失败应进入 DLQ，临时失败应有限重试并退避，已完成的重复事件应 ACK；本项目使用 `basicNack(tag, false, false)` 将模拟永久失败送入死信流程。
+- 更新：[[RabbitMQ入门实战]]、本文件。
+
+## [2026-09-25] query | RabbitMQ 消费幂等
+
+- 触发：Harlan 询问什么是幂等。
+- 结论：幂等指同一业务请求执行一次和执行多次，最终业务状态与对外副作用相同；它不要求代码只进入一次。RabbitMQ 可能再次投递消息，因此 Consumer 应使用稳定的 `eventId`、数据库唯一约束、处理记录或业务状态机避免重复扣款、扣库存、发货和通知。
+- 补充：幂等是目标，去重是实现手段；去重登记与业务更新必须处于同一事务边界。本项目的内存 Set 只用于演示，不能覆盖重启和多实例场景。
+- 更新：[[RabbitMQ入门实战]]、本文件。
+
+## [2026-09-25] query | 创建 Python Day01-20 学习项目
+
+- 触发：Harlan 希望参考 `jackfrued/Python-100-Days`，在 `code/` 下创建带详细中文注释的小 Demo 项目学习 Python。
+- 范围：建立完整 Day01-100 阶段路线，并实现 Day01-20 Python 基础；参考仓库只用于主题编排，示例代码重新编写。
+- 产出：`code/python-learning-demos/` 包含 48 个独立 Demo、统一运行器、项目 README、后续路线和自动化测试，覆盖环境、控制流、容器、函数、装饰器、递归与面向对象综合项目。
+- 验证：使用 Python 3.14.7 编译全部文件；9 项核心逻辑测试和逐个运行 48 个 Demo 的冒烟测试全部通过。
+- 新增：[[Python基础学习实战]]、`code/python-learning-demos/`；更新：[[index]]、`README.md`、本文件。
+
+## [2026-09-25] query | 优化 Python Demo 目录名称
+
+- 触发：Harlan 反馈 `day01`、`day02` 等目录无法直接看出学习内容。
+- 调整：将 20 个 Demo 目录统一改为“二位序号-主题”，例如 `01-Python环境与运行`、`05-分支结构`、`14-函数与模块`。
+- 同步：更新 Demo 发现规则、测试路径、项目 README 和复习文档中的运行示例。
+- 更新：[[Python基础学习实战]]、`code/python-learning-demos/`、本文件。
+
+## [2026-09-26] query | Python 项目虚拟环境操作
+
+- 触发：Harlan 希望避开 macOS 自带的较低版本 Python，为学习项目创建虚拟环境。
+- 结论：虚拟环境继承创建它的解释器版本，因此应使用 `/opt/homebrew/bin/python3 -m venv .venv` 创建，再通过 `source .venv/bin/activate` 激活；不能依靠 `venv` 自动升级 Python。
+- 补充：README 增加创建、激活、验证、退出和重新进入步骤；项目命令统一演示为激活后使用 `python`，依赖安装使用 `python -m pip`。
+- 更新：[[Python基础学习实战]]、`code/python-learning-demos/README.md`、[[index]]、本文件。
+
+## [2026-09-26] query | PyCharm 运行按钮解释器不一致
+
+- 触发：Harlan 激活 `.venv` 后，终端运行使用 Python 3.14，但代码左侧运行按钮仍使用 Python 3.9。
+- 定位：项目 `.idea/misc.xml` 与模块配置仍绑定 `Python 3.9`；终端激活只影响该终端的 `PATH`，不会修改 PyCharm 的项目 SDK 或已有 Run Configuration。
+- 解决：在 PyCharm 中将 Existing Interpreter 设置为项目 `.venv/bin/python`；若旧运行配置覆盖项目默认值，再把其解释器改为 `Project Default` 或删除后重建。
+- 更新：[[Python基础学习实战]]、`code/python-learning-demos/README.md`、[[index]]、本文件。
+
+## [2026-09-26] query | deactivate 与 PyCharm 项目解释器
+
+- 触发：Harlan 发现终端执行 `deactivate` 后，PyCharm 运行按钮仍使用 Python 3.14。
+- 结论：这是正常行为；`deactivate` 只恢复当前终端的 `PATH`，不会更改 PyCharm 持久保存的项目解释器。PyCharm 运行按钮会继续直接调用 `.venv/bin/python` 的绝对路径。
+- 更新：[[Python基础学习实战]]、`code/python-learning-demos/README.md`、本文件。
+
+## [2026-09-26] ingest | 英语个人学习记录
+
+- 触发：Harlan 要求摄入 `raw/personal/English.md`，梳理并重新编辑排版输出。
+- 处理：按个人记录流程摄入，不创建客观来源摘要页，也不把个人记录计入置信度来源数量；原始文件保持只读。
+- 梳理：将 865 行增量记录重组为发音、介词、核心动词、短语动词、句型语法和机场表达六条主线，合并重复条目并修正明显的拼写、翻译和规则错误。
+- 核查：使用 British Council 和 Cambridge Dictionary 的公开资料复核重音、地点与时间介词、how/what 感叹、否定副词倒装和多词动词结构；原笔记引用的 Bilibili 视频未作为独立来源摄入。
+- 新增：[[英语学习笔记]]、[[英语发音与重音]]、[[英语介词的空间模型]]、[[英语高频动词与短语动词]]、[[英语疑问感叹与倒装结构]]；更新：[[index]]、本文件。
+
+## [2026-09-26] ingest | 强化英语笔记的技巧与例句
+
+- 触发：Harlan 希望输出文档更明显地体现原始记录中的英语学习技巧，并尽量提供准确例句。
+- 调整：新增技巧总览与章节内提示框，明确保留容器/表面/点、箭头与受益区、二维/三维路径、小品词方向感，以及 `take/set/turn/break/cut` 的核心动作模型。
+- 例句：为主要短语动词、易混词、数字界面操作和原记录中的实用句子补充完整例句，并增加语体或语境提示。
+- 核查：补充 Cambridge 的使役结构、`get`、`as/like` 资料和 British Council 的短语动词资料；纠正无法自然迁移的字面助记。
+- 更新：[[英语学习笔记]]、本文件。
+
+## [2026-09-26] query | 优化英语发音拼读与重音
+
+- 触发：Harlan 希望核查 `ai/ay`、`ee/ea/ie`、`oa/oe`、`oi/oy`、`ou/ow`、`oo/ue/ui` 等读音总结，并优化发音章节。
+- 结论：`oi/oy → /ɔɪ/` 相对最稳定；`ai/ay`、`ee/ea`、`oa/oe` 可作为起始映射但需记录例外；`ei/ey`、`ie`、`ou/ow`、`oo/ue/ui` 都不能压缩成单一读音。
+- 扩充：新增 17 组字母组合对照、相对稳定性、位置倾向、六组朗读句、重音符号、schwa 示例和新词六步判断法。
+- 核查：参考 University of Florida Literacy Institute、Reading Rockets、British Council 与 Cambridge Dictionary 的课程、拼读说明和词典音标。
+- 更新：[[英语学习笔记]]、[[英语发音与重音]]、本文件。
