@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.harlan.kafka</groupId>
+    <artifactId>kafka-learning-labs</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <!-- 根项目只聚合和统一管理子模块，本身不生成可执行 JAR。 -->
+    <packaging>pom</packaging>
+
+    <name>Kafka Learning Labs</name>
+
+    <modules>
+        <!-- Maven Reactor 会按这里列出的模块统一编译和测试。 -->
+        <module>01-hello-world-java</module>
+        <module>02-log-pipeline-java</module>
+    </modules>
+
+    <properties>
+        <!-- 所有模块统一使用 Java 21 编译，避免各模块版本漂移。 -->
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 依赖和构建插件的版本只在根 POM 维护。 -->
+        <kafka.version>4.3.1</kafka.version>
+        <jackson.version>2.21.5</jackson.version>
+        <junit.version>5.13.4</junit.version>
+        <maven.compiler.version>3.14.1</maven.compiler.version>
+        <maven.surefire.version>3.5.4</maven.surefire.version>
+    </properties>
+
+    <dependencyManagement>
+        <!-- 此处只规定版本；子模块仍需在 dependencies 中声明实际使用的依赖。 -->
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <!-- 与依赖管理同理：这里统一插件版本，子模块按需启用。 -->
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

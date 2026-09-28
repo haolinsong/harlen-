@@ -350,3 +350,62 @@ sources: []
 - 扩充：新增 17 组字母组合对照、相对稳定性、位置倾向、六组朗读句、重音符号、schwa 示例和新词六步判断法。
 - 核查：参考 University of Florida Literacy Institute、Reading Rockets、British Council 与 Cambridge Dictionary 的课程、拼读说明和词典音标。
 - 更新：[[英语学习笔记]]、[[英语发音与重音]]、本文件。
+
+## [2026-09-28] query | Kafka 前半阶段学习指南与两个 Java 实验
+
+- 触发：Harlan 希望系统学习 Kafka；确认先只生成两个项目，并把原 23 章计划收缩为可覆盖当前项目的前半阶段内容，后续只登记不展开。
+- 基线：核验 Apache Kafka 4.3.1、Java 21 与 KRaft Only；ZooKeeper 仅作为旧集群迁移背景。
+- 文档：[[Apache Kafka学习指南]] 当前包含 12 章，覆盖基础架构、Topic/Partition、KRaft 部署、Producer、Consumer、存储、副本、可靠性、Java 开发与两个实战；第 12 章记录 Python、Connect、Streams、Schema、安全、监控、排障、调优、Kubernetes 和生产架构等后续清单。
+- 代码：新增 `code/kafka-learning-labs/`，当前只保留 `01-hello-world-java` 与 `02-log-pipeline-java`；包括官方 Kafka 4.3.1 Compose、Topic 脚本、详细注释和单元测试。
+- 验证：项目已配置独立 Maven Wrapper，两个模块从零编译成功，4 项测试全部通过；`compose.yaml` 通过 YAML 语法检查并按 Apache Kafka 官方单节点示例复核。当前环境未安装 `docker` 命令，因此 Broker 联调暂未验证。
+- 新增：[[Apache Kafka]]、[[Kafka核心架构]]、[[Kafka可靠性与交付语义]]、[[Kafka KRaft开发环境]]、[[Apache Kafka学习指南]]；更新：[[index]]、本文件。
+
+## [2026-09-28] query | 补充 Kafka 整体架构与核心名词关系
+
+- 解释：在指南 2.1 节补充控制面、数据面和客户端的职责，以及从 Producer 到 Leader、Follower、Consumer 和 Offset 的流转链路。
+- 关系：在 2.2 节增加 Broker、Topic、Partition、Replica、Leader、Follower、Producer、Consumer、Consumer Group 与 Offset 的层级图和七条关系。
+- 纠正：Broker 物理上保存的是多个 Topic 的 Partition Replica，不能简化为每个 Broker 都包含完整 Topic。
+- 更新：[[Apache Kafka学习指南]]、本文件。
+
+## [2026-09-28] query | 解释 Kafka Consumer Group 分工与消费进度
+
+- 空闲：用 4 个 Partition 和 6 个 Consumer 说明同组有效并行度的上限，以及空闲成员在 Rebalance 后接管 Partition 的可能。
+- 进度：明确 Committed Offset 以 `Consumer Group + Topic + Partition` 为键独立保存，表示该 Group 在该 Partition 下一条要读的位置。
+- 分工：区分 Group 内负载均衡与 Group 间独立订阅；“读取全部消息”指 Group 整体而非每个 Consumer，并受起始 Offset 和 Retention 限制。
+- 更新：[[Apache Kafka学习指南]]、本文件。
+
+## [2026-09-28] query | 进一步解释 Kafka KRaft
+
+- 定位：将 KRaft 解释为 Kafka 内置的元数据管理与共识机制，明确它取代 ZooKeeper，但不存放或中转普通业务消息。
+- 机制：补充 Active Controller、Standby Controller、Metadata Log、Raft 多数派提交、Broker 元数据同步和 Controller 故障选举流程。
+- 区分：明确 Active Controller 与 Partition Leader 的职责和数量不同，并介绍 Broker-only、Controller-only 和 Combined Mode。
+- 更新：[[Apache Kafka学习指南]]、本文件。
+
+## [2026-09-28] query | 补充 Kafka 消息 Key 定义
+
+- 命名：将指南 3.1 节从“从 key 到 Partition”改为“消息 Key 如何决定 Partition”，避免缺少上下文。
+- 定义：补充 Kafka Record 结构、Producer 主动指定 Key 的语义，以及 Java `ProducerRecord<K, V>` 中 `K` 和 `V` 的含义。
+- 用途：说明 Key 参与 Partition 映射、实体内顺序和 Log Compaction，并明确 Key 不是全局唯一主键。
+- 更新：[[Apache Kafka学习指南]]、本文件。
+
+## [2026-09-28] query | Codex 长会话与上下文管理
+
+- 结论：当前会话已较长且经过上下文压缩，但仍可正常工作；无法从任务内部精确读取剩余上下文百分比。
+- 建议：同一目标优先使用 `/status` 和 `/compact`（客户端提供时）；主题变化时新建任务，需继承历史分叉时使用 Fork。
+- 落盘：本库依靠 `AGENTS.md`、`wiki/index.md`、主题输出页和 `wiki/log.md` 保存状态，因此新会话不会丢失已归档的学习内容。
+- 更新：[[当前项目工作原理]]、本文件。
+
+## [2026-09-28] query | 区分 Partition Leader 与 Leader Replica
+
+- 结论：Partition Leader 与 Leader Replica 指向同一个副本，前者从 Partition 角度命名，后者从 Replica 角度命名；`Replica Leader` 不是推荐的常用表述。
+- 层级：一个 Partition 拥有一组 Replica，其中一个承担 Leader，其余承担 Follower；不是一个 Replica 内部包含 Leader 和 Follower。
+- 更新：[[Apache Kafka学习指南]]、本文件。
+
+## [2026-09-28] query | Kafka 学习项目新手注释与开发流程
+
+- 触发：Harlan 希望以新手视角阅读 `kafka-learning-labs`，要求为代码增加详细注释，并在 README 说明开发流程和阅读顺序。
+- 源码：为两个 Java 实验的配置、Admin、Producer、Consumer、事件契约、JSON 编解码和测试补充类级、方法级与关键步骤中文注释；同时解释 Maven、Compose 和 Topic 脚本中的关键配置。
+- 文档：根 README 按版本与环境、Topic、最小闭环、结构化事件、失败场景和验证方式还原开发流程；两个实验 README 分别增加逐文件阅读顺序、输出解读、练习和教学边界。
+- 学习路径：明确先读环境与配置，再沿 `serialize -> produce -> partition -> poll -> process -> commit` 追踪消息，最后用 Consumer Group CLI 验证 Offset 与 Lag。
+- 验证：Java 21 下两个 Maven 模块编译成功，4 项单元测试全部通过；Shell 脚本语法、Git whitespace 检查和知识库 lint 均通过。当前环境没有 `docker` 命令，因此未重复执行 Broker 联调。
+- 更新：`code/kafka-learning-labs/`、[[Apache Kafka学习指南]]、[[index]]、本文件。

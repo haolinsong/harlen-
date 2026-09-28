@@ -3,7 +3,7 @@ title: 索引
 type: index
 tags: [系统]
 created: 2026-09-13
-updated: 2026-09-26
+updated: 2026-09-28
 ---
 
 # 索引
@@ -29,13 +29,24 @@ updated: 2026-09-26
 - [[英语高频动词与短语动词]] — 从核心动词、小品词和三类多词动词结构组织高频表达
 - [[英语疑问感叹与倒装结构]] — 区分直接与间接疑问、what/how 感叹句以及部分和完全倒装
 
-### Java / Python / Bash / OS / 系统框架
+### 系统框架
+
+- [[Kafka核心架构]] — 以 Partition 为核心理解 Topic、Broker、Consumer Group 与 KRaft Controller 的关系
+- [[Kafka可靠性与交付语义]] — 用 ACK、ISR、Offset、事务与业务幂等组合分析消息丢失和重复
+
+### Java / Python / Bash / OS
 
 _暂无。_
 
 ## 操作（`howto/`）
 
 回答"怎么做"：适用环境 → 步骤 → 验证 → 已知坑。
+
+### 系统框架
+
+- [[Kafka KRaft开发环境]] — 用官方 Kafka 4.3.1 容器启动 KRaft 单节点并验证两个 Java 入门实验
+
+### Java / Python / Bash / OS / 通用 / 知识管理
 
 _暂无。_
 
@@ -45,6 +56,7 @@ _暂无。_
 
 - [[graphify]] — 把代码库与多模态语料编译成知识图谱的 skill 型工具；仓库已核实
 - [[Andrej Karpathy]] — LLM Wiki 模式的提出者
+- [[Apache Kafka]] — 基于 Partition 持久日志、Consumer Group 和 KRaft 元数据仲裁的分布式事件流平台
 
 ## 来源摘要（`sources/`）
 
@@ -66,6 +78,10 @@ _暂无。_
 
 - [[Python基础学习实战]] — 参考 Python-100-Days 重新编写的 Day01-20 学习项目，包含虚拟环境与 PyCharm 解释器配置、48 个中文注释 Demo、统一运行器和自动化测试
 
+### 系统框架
+
+- [[Apache Kafka学习指南]] — Kafka 4.3.1 与 KRaft 基线下的 12 章学习材料，配套两个含详细注释、开发流程与阅读顺序的 Java 入门实验
+
 ### 通用
 
 - [[Codex旧对话提供商缺失排障]] — 四个旧对话引用缺失的 DeepSeek 提供商，说明诊断证据与恢复路径
@@ -77,4 +93,4 @@ _暂无。_
 
 ---
 
-统计：来源 3 · 概念 7 · 操作 0 · 实体 2 · 输出 7 · 最后更新 2026-09-26
+统计：来源 3 · 概念 9 · 操作 1 · 实体 3 · 输出 8 · 最后更新 2026-09-28
