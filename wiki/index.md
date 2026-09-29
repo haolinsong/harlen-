@@ -3,14 +3,14 @@ title: 索引
 type: index
 tags: [系统]
 created: 2026-09-13
-updated: 2026-09-28
+updated: 2026-09-29
 ---
 
 # 索引
 
 全库总目录。Agent 每次 ingest 后必须更新本页；回答问题时**先读本页定位**，再深入具体页面。
 
-分区顺序：概念 → 操作 → 实体 → 来源 → 输出。每区内部按技术栈分组，技术栈顺序：Java / Python / Bash / OS / 系统框架 / 通用 / 知识管理。
+分区顺序：概念 → 操作 → 实体 → 来源 → 输出。每区内部按技术栈分组，技术栈顺序：Java / Python / Bash / OS / 容器 / 系统框架 / 通用 / 知识管理。
 
 ## 概念（`concepts/`）
 
@@ -29,6 +29,13 @@ updated: 2026-09-28
 - [[英语高频动词与短语动词]] — 从核心动词、小品词和三类多词动词结构组织高频表达
 - [[英语疑问感叹与倒装结构]] — 区分直接与间接疑问、what/how 感叹句以及部分和完全倒装
 
+### 容器
+
+- [[容器与虚拟机]] — 从共享内核、资源开销和隔离边界区分容器与虚拟机
+- [[Docker架构]] — 解释 CLI、API、Daemon、Registry、containerd、runc 与容器进程的调用链
+- [[Docker镜像与容器]] — 区分镜像、容器、Repository、Tag、Digest、只读层和容器可写层
+- [[Docker容器生命周期]] — 用主进程模型解释 create、run、start、stop、kill 与 rm
+
 ### 系统框架
 
 - [[Kafka核心架构]] — 以 Partition 为核心理解 Topic、Broker、Consumer Group 与 KRaft Controller 的关系
@@ -41,6 +48,10 @@ _暂无。_
 ## 操作（`howto/`）
 
 回答"怎么做"：适用环境 → 步骤 → 验证 → 已知坑。
+
+### 容器
+
+- [[Docker环境验证与首个容器]] — 验证 CLI、Daemon、context、镜像拉取和容器生命周期，并精确清理实验资源
 
 ### 系统框架
 
@@ -57,6 +68,7 @@ _暂无。_
 - [[graphify]] — 把代码库与多模态语料编译成知识图谱的 skill 型工具；仓库已核实
 - [[Andrej Karpathy]] — LLM Wiki 模式的提出者
 - [[Apache Kafka]] — 基于 Partition 持久日志、Consumer Group 和 KRaft 元数据仲裁的分布式事件流平台
+- [[Docker]] — 用于构建、分发和运行容器化应用的平台与工具集合，区分 Engine、Daemon、CLI、Desktop、Compose 与 OCI
 
 ## 来源摘要（`sources/`）
 
@@ -82,6 +94,11 @@ _暂无。_
 
 - [[Apache Kafka学习指南]] — Kafka 4.3.1 与 KRaft 基线下的 12 章学习材料，配套两个含详细注释、开发流程与阅读顺序的 Java 入门实验
 
+### 容器
+
+- [[Docker学习路径]] — 4 周、每周 5～7 小时的渐进路线，当前只展开基础阶段
+- [[Docker核心学习笔记]] — 从 Mac 使用 Homebrew 安装与常用命令开始，学习容器与虚拟机、Docker 架构、镜像对象模型和生命周期
+
 ### 通用
 
 - [[Codex旧对话提供商缺失排障]] — 四个旧对话引用缺失的 DeepSeek 提供商，说明诊断证据与恢复路径
@@ -93,4 +110,4 @@ _暂无。_
 
 ---
 
-统计：来源 3 · 概念 9 · 操作 1 · 实体 3 · 输出 8 · 最后更新 2026-09-28
+统计：来源 3 · 概念 13 · 操作 2 · 实体 4 · 输出 10 · 最后更新 2026-09-29

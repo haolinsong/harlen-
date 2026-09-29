@@ -409,3 +409,49 @@ sources: []
 - 学习路径：明确先读环境与配置，再沿 `serialize -> produce -> partition -> poll -> process -> commit` 追踪消息，最后用 Consumer Group CLI 验证 Offset 与 Lag。
 - 验证：Java 21 下两个 Maven 模块编译成功，4 项单元测试全部通过；Shell 脚本语法、Git whitespace 检查和知识库 lint 均通过。当前环境没有 `docker` 命令，因此未重复执行 Broker 联调。
 - 更新：`code/kafka-learning-labs/`、[[Apache Kafka学习指南]]、[[index]]、本文件。
+
+## [2026-09-29] schema | 新主题会话启动提示词
+
+- 起因：Harlan 希望以后为 Docker 等新学习主题开独立会话时，Agent 主动提醒并给出可复制的启动提示词。
+- 规则：当用户表示要开新主题会话时，当前 Agent 必须生成启动提示词；提示词只补充主题范围、会话边界和首次任务，通用规则继续由根目录 `AGENTS.md` 提供。
+- 边界：空白新会话在用户发送首条消息前无法主动提醒；新会话不继承其他会话的对话历史。
+- 更新：`AGENTS.md`、`README.md`、本文件。
+
+## [2026-09-29] query | Docker 专题第一阶段基础概念
+
+- 范围：按“第一次只生成基础概念”的要求建立 Docker 四周学习路线，但只展开容器与虚拟机、Docker 架构、镜像与容器、生命周期和首个容器实验；Dockerfile、存储、网络、Compose、排障、安全与综合项目留待后续阶段。
+- 核验：以 Docker Docs、Docker CLI reference、Docker Engine security、Moby 与 OCI Image/Runtime/Distribution 规范为主要来源；记录 2026-09-29 访问基线和 Docker Desktop 4.93.0 发行说明，不将普通博客作为关键结论依据。
+- 新增：[[Docker]]、[[容器与虚拟机]]、[[Docker架构]]、[[Docker镜像与容器]]、[[Docker容器生命周期]]、[[Docker环境验证与首个容器]]、[[Docker学习路径]]、[[Docker核心学习笔记]]。
+- 验证：当前环境没有 `docker` 命令，未声称完成容器运行；命令按官方 reference 静态核对，Mermaid 代码块与连接关系人工检查，仓库没有独立 Mermaid 校验器；`python3 scripts/lint.py` 通过，无错误或警告。
+- 边界：未修改 `raw/`、`AGENTS.md`、`README.md`、`code/`、`wiki/QUESTIONS.md` 或 `wiki/overview.md`；保留开工前已有未提交修改，仅更新 [[index]] 并在本文件末尾追加本条记录。
+
+## [2026-09-29] query | Docker 笔记前置 Mac 安装步骤
+
+- 触发：Harlan 希望先安装 Docker，再开始学习基础概念。
+- 更新：在 [[Docker核心学习笔记]] 开头增加 Mac 安装章节，覆盖 Apple Silicon/Intel 选择、官方 DMG 安装、首次启动、CLI/Server/Compose 验证、hello-world 自检和常见安装问题；同步 [[Docker环境验证与首个容器]] 的前置入口和 [[index]]。
+- 核验：参考 Docker 官方 Mac 安装与权限说明；安装自检使用 `--rm`，明确与后续保留容器的生命周期实验区别。本次仅更新文档，未安装 Docker 或执行容器实验。
+
+## [2026-09-29] query | Docker Mac 安装改用 Homebrew
+
+- 触发：Harlan 要求删除芯片与系统要求说明，改用 Brew 命令安装 Docker，并补充常见使用命令。
+- 修订：重写 [[Docker核心学习笔记]] 的第 0 章，以 `brew install --cask docker` 安装 Docker Desktop，补充首次启动、环境验证、hello-world、镜像/容器/Compose 常用命令和常见错误；同步 [[Docker环境验证与首个容器]] 与 [[index]]。
+- 核验：使用 Homebrew 官方 Docker cask 与 Docker 官方 Mac 安装文档交叉检查；明确 `brew install docker` 只安装 CLI，不能替代 Docker Desktop。本次仅更新文档，没有在用户 Mac 上执行安装。
+
+## [2026-09-29] query | hello-world 容器状态与关闭
+
+- 结论：`docker run --rm hello-world:latest` 会创建并启动容器；其主进程打印信息后立即退出，`--rm` 再自动删除容器，因此命令结束后无需另行停止或删除。
+- 更新：在 [[Docker核心学习笔记]] 补充运行中与全部容器的查看和计数方法，并用 Nginx 示例说明 `docker stop`、`docker start` 与 `docker rm` 的区别。
+- 安全：常规关闭优先使用 `docker stop`，不把 `docker kill` 或 `docker rm -f` 作为默认方法；本次仅修改文档，没有操作本机 Docker 资源。
+
+## [2026-09-29] query | Mac 后台容器与 Docker Desktop
+
+- 结论：在 Mac 上使用 Docker Desktop 的本地 Engine 时，Desktop 必须运行，但 Dashboard 窗口可以关闭，也无需在每条 CLI 命令前重复启动；`docker run -d` 只脱离终端，不能脱离 Engine。
+- 行为：关闭终端不停止后台容器；退出 Docker Desktop 会停止本地 Engine并影响其容器，再次启动时是否自动恢复取决于容器 restart policy。
+- 更新：[[Docker架构]]、[[Docker核心学习笔记]]、本文件；补充 Desktop 状态检查、启动、登录时自动启动和 Resource Saver 的使用说明。
+
+## [2026-09-29] query | Mac 关机前的 Docker 停止顺序
+
+- 结论：正常关机不要求先全局停止全部容器再退出 Docker Desktop；有数据库或持续写入服务时，推荐先按容器或 Compose 项目优雅停止，再正常关闭 Mac。
+- 操作：区分 `docker compose stop` 的“停止并保留”和 `docker compose down` 的“停止并删除项目容器与网络”；警示 `down -v` 会进一步删除 Volume 数据。
+- 边界：不把 `docker stop $(docker ps -q)` 或 `docker system prune` 作为日常关机步骤，避免影响同一 Engine 中的无关项目和资源。
+- 更新：[[Docker容器生命周期]]、[[Docker核心学习笔记]]、本文件；依据 Docker 官方 stop 与 Compose stop/down 文档核验。
