@@ -28,7 +28,10 @@ def read(path):
 def walk_md(root):
     out = []
     for base, dirs, files in os.walk(root):
-        dirs[:] = [d for d in dirs if d not in {".obsidian", ".git", ".trash"}]
+        # Skill 示例和依赖文档不是知识页面，不能掩盖真正的断链。
+        dirs[:] = [d for d in dirs if d not in {
+            ".obsidian", ".git", ".trash", ".agents", ".codex", "node_modules",
+        }]
         out += [os.path.join(base, f) for f in files if f.endswith(".md")]
     return sorted(out)
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harlan · 知识库治理"
+  short_description: "检查知识库结构与链接，维护项目规则、脚本和新主题会话交接"
+  default_prompt: "请使用 $harlan-wiki-governance 检查本知识库的结构与链接，给出有证据的改进建议。"

@@ -1,0 +1,38 @@
+{
+  "installed": "2026-10-01",
+  "scope": "repository",
+  "upstream": {
+    "repository": "https://github.com/kepano/obsidian-skills",
+    "commit": "3ccff5338ea700537839b21900aa5358a0402c98",
+    "license": "MIT",
+    "skills": [
+      {
+        "path": "skills/obsidian-markdown",
+        "installed_path": ".agents/skills/obsidian-markdown",
+        "local_changes": [
+          "Narrowed description to Obsidian-specific syntax work",
+          "Added Harlan Schema precedence and raw/config link conventions"
+        ]
+      },
+      {
+        "path": "skills/defuddle",
+        "installed_path": ".agents/skills/defuddle",
+        "local_changes": [
+          "Scoped description to public HTML extraction",
+          "Use pinned project-local CLI instead of a global npm installation",
+          "Keep raw read-only and verify extraction completeness"
+        ]
+      }
+    ]
+  },
+  "project_skills": [
+    "harlan-wiki-ingest",
+    "harlan-wiki-query",
+    "harlan-wiki-governance"
+  ],
+  "runtime": {
+    "defuddle": "0.19.4",
+    "manifest": "scripts/package.json",
+    "lockfile": "scripts/package-lock.json"
+  }
+}

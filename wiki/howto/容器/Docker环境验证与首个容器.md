@@ -5,7 +5,7 @@ tags: [容器/Docker, 入门实验]
 aliases: [Docker安装验证, Docker Hello World, 运行第一个Docker容器]
 sources: []
 created: 2026-09-29
-updated: 2026-09-29
+updated: 2026-09-30
 verified: ""
 env: "macOS/Windows/Linux · Docker Desktop 或 Docker Engine · Docker CLI"
 domain_volatility: high
@@ -23,12 +23,12 @@ confidence: medium
 - Linux：可使用 Docker Engine；也可使用 Docker Desktop，但 Desktop 使用独立 VM 和 `desktop-linux` context。
 - 命令均以 Compose v2 所在的现代 Docker CLI 为基线；本实验本身不使用 Compose。
 
-> [!question] 待验证
-> 当前知识库执行环境中没有 `docker` 命令，因此以下命令已按 2026-09-29 的官方 CLI 文档静态核对，但尚未在本机实际运行。`verified` 留空，不能把本页视为已完成端到端验证。
+> [!question] 部分待验证
+> 2026-09-30 已确认 Docker CLI 29.8.1 能连接 Docker Desktop 4.93.0 的 Engine 29.8.1；但本任务没有重新执行本页完整的 `hello-world` 创建、再次启动和清理序列，因此 `verified` 仍留空。
 
 ## 前置条件
 
-Mac 初次安装者先阅读 [[Docker核心学习笔记]] 开头的「0. 先在 Mac 上安装 Docker」，其中包含 Homebrew 安装、首次启动、基础验收和常用命令。完成后回到本页观察容器生命周期；安装自检使用 `--rm`，本页实验刻意保留容器以便再次启动。
+Mac 初次安装者先阅读 [[01-Docker核心学习笔记]] 开头的「0. 先在 Mac 上安装 Docker」，其中包含 Homebrew 安装、首次启动、基础验收和常用命令。完成后回到本页观察容器生命周期；安装自检使用 `--rm`，本页实验刻意保留容器以便再次启动。
 
 本页不自动安装 Docker，也不修改系统服务。请根据操作系统使用官方安装入口：
 
@@ -212,4 +212,4 @@ docker image rm hello-world:latest
 - [[Docker架构]] — 为什么要分别验证 Client、Server 和 context
 - [[Docker镜像与容器]] — 镜像、容器、Tag 与 Digest
 - [[Docker容器生命周期]] — `run`、`start`、`stop`、`rm` 的区别
-- [[Docker核心学习笔记]] — 基础概念、练习和自测
+- [[01-Docker核心学习笔记]] — Mac 安装、常用命令与基础概念

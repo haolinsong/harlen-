@@ -1,14 +1,14 @@
 ---
-title: Docker 核心学习笔记
+title: 01 Docker 核心学习笔记
 type: output
 tags: [容器/Docker, 基础]
-aliases: [Docker基础学习笔记, Docker核心概念, Docker入门笔记]
+aliases: [Docker 核心学习笔记, Docker核心学习笔记, Docker基础学习笔记, Docker核心概念, Docker入门笔记]
 created: 2026-09-29
-updated: 2026-09-29
+updated: 2026-09-30
 related: ["[[Docker]]", "[[容器与虚拟机]]", "[[Docker架构]]", "[[Docker镜像与容器]]", "[[Docker容器生命周期]]", "[[Docker环境验证与首个容器]]", "[[Docker学习路径]]"]
 ---
 
-# Docker 核心学习笔记
+# 01 Docker 核心学习笔记
 
 这是 Docker 四周学习专题的第一阶段。Mac 用户先完成下面的安装与验证，再学习容器、镜像和生命周期；这些概念是后续 Dockerfile、存储、网络和 Compose 的基础。
 
@@ -262,10 +262,10 @@ docker rm web-demo
 
 
 > [!info] 资料基线
-> 本页根据 2026-09-29 访问的 Docker 官方文档、CLI reference、Moby 和 OCI 规范编写。当天 Docker Desktop 最新发行说明为 4.93.0；概念不依赖单一补丁版本，实际安装要求和组件版本应以官方当前页面为准。
+> 本页根据 2026-09-29 访问的 Docker 官方文档、CLI reference 和 Moby 项目资料编写。当天 Docker Desktop 最新发行说明为 4.93.0；概念不依赖单一补丁版本，实际安装要求和组件版本应以官方当前页面为准。
 
 > [!question] 运行验证状态
-> 当前知识库执行环境没有 `docker` 命令。本页中的命令已经按官方 CLI 文档静态核对，但没有在本机运行；实际验证步骤集中在 [[Docker环境验证与首个容器]]。
+> 2026-09-30 已确认 Docker CLI 29.8.1 能连接 Docker Desktop 4.93.0 的 Engine 29.8.1，并实际运行了第二阶段构建与存储实验。本页的首容器完整验证步骤集中在 [[Docker环境验证与首个容器]]。
 
 ## 一句话结论
 
@@ -290,24 +290,40 @@ Docker 把应用及其用户态依赖做成不可变镜像，再由 Daemon 按�
 传统交付经常把应用代码和环境准备拆开：开发者交付代码，另一台机器再单独安装运行时、系统库和工具。版本、路径、权限或配置一旦不同，就会出现环境漂移。
 
 容器镜像把应用所需的用户态文件、二进制、库和默认运行配置一起打包。开发、测试和部署可以从同一镜像内容创建容器，减少“重新解释环境”的次数。
-### 1.2 适用与不适用
 
-适合：可重复开发环境、Web/API 服务、后台任务、CI 构建、可替换的服务组件、本地依赖环境。
-
-需要谨慎或额外边界：执行不可信多租户代码、强隔离工作负载、依赖特殊内核模块/硬件/桌面 GUI 的应用、需要完整不同 OS 内核的场景。此时可能需要 VM、沙箱运行时或专用主机。
 
 ## 2. 容器与虚拟机
 
 容器（Container）共享运行它的内核；虚拟机（Virtual Machine）拥有自己的 Guest OS 内核。这个区别同时解释了容器为何轻量，以及为何不能把容器默认当成与 VM 等价的安全边界。
 
-| 维度 | 容器 | 虚拟机 |
-| --- | --- | --- |
-| 运行对象 | 隔离进程 | 完整 Guest OS |
-| 内核 | 共享宿主机或 Desktop VM 内核 | 每台 VM 独立内核 |
-| 启动 | 通常接近进程启动 | 需要启动操作系统 |
-| 打包 | 应用和用户态依赖 | OS、驱动、应用和依赖 |
-| 隔离 | namespaces、cgroups、安全策略 | Hypervisor 与独立内核 |
-| 典型组合 | 可运行在 VM 内 | VM 内可运行多个容器 |
+| 维度   | 容器                      | 虚拟机              |
+| ---- | ----------------------- | ---------------- |
+| 运行对象 | 隔离进程                    | 完整 Guest OS      |
+| 内核   | 共享宿主机或 Desktop VM 内核    | 每台 VM 独立内核       |
+| 启动   | 通常接近进程启动                | 需要启动操作系统         |
+| 打包   | 应用和用户态依赖                | OS、驱动、应用和依赖      |
+| 隔离   | namespaces、cgroups、安全策略 | Hypervisor 与独立内核 |
+| 典型组合 | 可运行在 VM 内               | VM 内可运行多个容器      |
+
+### 2.1 “运行对象”是什么意思
+
+“运行对象”指启动、停止和分配资源时，主要被管理的东西：
+
+- **容器的运行对象是隔离进程**：运行 Nginx 容器，本质上是在一个已经运行的 Linux 内核上启动 Nginx 进程，再用 namespaces、cgroups、独立文件系统和网络配置把它隔离起来。容器可以有多个进程，但没有自己的内核，也没有完整的操作系统开机过程。
+- **虚拟机的运行对象是完整 Guest OS**：Guest OS 中文常称“客体操作系统”或“来宾操作系统”，是运行在虚拟硬件中的另一套操作系统。它会启动自己的内核、初始化系统、系统服务，最后才运行应用。
+
+不要根据目录和命令的外观判断：容器内可能有 `/bin`、`/etc`、Shell 和包管理器，看起来很像一套 Linux，但这些只是用户态文件；容器仍然借用外部 Linux 内核，所以不是完整 Guest OS。“完整”也不代表必须有图形界面，最小化 Ubuntu 只要有自己的内核和启动过程，仍然是 Guest OS。
+
+在当前 Mac 环境中的实际层级是：
+
+```text
+Mac 硬件
+└── macOS（Host OS）
+    └── Docker Desktop 的 Linux VM（有自己的 Linux 内核，是 Guest OS）
+        └── hello-world / Nginx 容器（共享该 Linux 内核的隔离进程）
+```
+
+因此表格中的一句话可以展开为：**容器隔离并运行应用进程；虚拟机启动并运行一套拥有独立内核的操作系统。**
 
 
 ## 3. Docker 的组件边界
@@ -341,47 +357,19 @@ flowchart LR
 
 关键结论：CLI 关闭通常不会让后台容器停止；一条命令操作哪台机器，取决于当前 Docker context 指向哪个 Daemon。
 
-### 3.2 五个最容易混淆的名称
-
-| 名称 | 记忆方式 |
-| --- | --- |
-| Docker | 整个平台与产品生态的总称 |
-| Docker Engine | 提供 API、管理容器对象的核心引擎 |
-| Docker Daemon | Engine 的长期运行服务端，进程名通常是 `dockerd` |
-| Docker CLI | 用户输入 `docker ...` 的客户端 |
-| Docker Desktop | 桌面安装包和产品，包含 Engine、CLI、Compose、GUI 等 |
-
-`docker --version` 成功只证明 CLI 存在；`docker version` 同时出现 Client 和 Server，才证明 CLI 已连接到 Daemon。
-
-更完整的边界见 [[Docker]] 与 [[Docker架构]]。
 
 ## 4. 镜像、容器、Registry、Tag 与 Digest
 
-### 4.1 对象模型
+### 4.1 对象模型、Tag 与 Digest
 
-| 对象 | 定义 | 关键性质 |
-| --- | --- | --- |
-| 镜像（Image） | 创建容器所需的只读、分层应用包 | 不运行；内容变化会形成新镜像内容 |
-| 容器（Container） | 镜像加运行配置、可写层和进程状态形成的实例 | 可运行、停止、再次启动或删除 |
-| Registry | 保存和分发镜像内容的服务 | Docker Hub 是默认公共 Registry 之一 |
-| Repository | Registry 中同一名称下的一组镜像引用 | 例如 `library/nginx` |
-| Tag | 人类可读、可移动的引用 | 例如 `1.29`、`latest` |
-| Digest | 基于内容的加密摘要 | 例如 `sha256:...`，内容不变则标识不变 |
-
-### 4.2 镜像为什么分层
-
-镜像层记录文件系统变化。不同镜像可以复用相同层，下载时只需获取本地缺失的层。容器创建时不会修改镜像层，而是在其上增加属于该容器的可写层。
-
-因此：
-
-- 同一镜像可以创建多个容器。
-- 每个容器拥有自己的运行配置和可写层。
-- 删除一个容器不会删除镜像，也不会删除其他容器。
-- 容器可写层不适合保存必须持久化的业务数据。
-
-Dockerfile 指令如何产生层、构建缓存如何命中，会在第 2 周展开。
-
-### 4.3 Tag 不等于版本锁定
+| 对象            | 定义                     | 关键性质                         |
+| ------------- | ---------------------- | ---------------------------- |
+| 镜像（Image）     | 创建容器所需的只读、分层应用包        | 不运行；内容变化会形成新镜像内容             |
+| 容器（Container） | 镜像加运行配置、可写层和进程状态形成的实例  | 可运行、停止、再次启动或删除               |
+| Registry      | 保存和分发镜像内容的服务           | Docker Hub 是默认公共 Registry 之一 |
+| Repository    | Registry 中同一名称下的一组镜像引用 | 例如 `library/nginx`           |
+| Tag           | 人类可读、可移动的引用            | 例如 `1.29`、`latest`           |
+| Digest        | 基于内容的加密摘要              | 例如 `sha256:...`，内容不变则标识不变    |
 
 镜像名的一般形式：
 
@@ -389,17 +377,66 @@ Dockerfile 指令如何产生层、构建缓存如何命中，会在第 2 周展
 [REGISTRY_HOST[:PORT]/]NAMESPACE/REPOSITORY[:TAG]
 ```
 
-`nginx` 通常等价于 `docker.io/library/nginx:latest`。这里的 `latest` 只是默认 Tag；维护者可以让它指向不同内容，Docker 也不会判断它是否比别的 Tag 更新。
+`nginx` 通常等价于 `docker.io/library/nginx:latest`。这里的 `latest` 只是默认 Tag；维护者可以让它指向不同内容，Docker 也不会判断它是否比别的 Tag 更新。因此 Tag 适合提供易读名称，但不能单独保证内容永远不变。
 
-需要固定内容时使用 Digest：
+需要固定镜像内容时使用 Digest：
 
 ```bash
 docker pull IMAGE@sha256:DIGEST
 ```
 
-固定 Digest 能复现同一内容，但不会自动包含以后发布的漏洞修复。可复现性与更新责任必须同时设计。
+Digest 根据内容计算；内容不变时标识不变，因此能固定到同一份镜像内容。但固定 Digest 不会自动包含以后发布的漏洞修复，仍然需要主动评估、测试并更新到新的 Digest。
 
 深入理解见 [[Docker镜像与容器]]。
+
+### 4.2 镜像为什么分层
+
+镜像层记录文件系统变化。不同镜像可以复用相同层，下载时只需获取本地缺失的层。容器创建时不会修改镜像层，而是在其上增加属于该容器的可写层。
+
+先把“层”理解为一张张叠加的只读透明片。每张透明片只记录相对下面各层发生的变化，叠起来才得到容器最终看见的完整文件系统。例如：
+
+| 层 | 只记录这一阶段的变化 |
+| --- | --- |
+| 基础层 | 加入最基本的 Linux 用户态文件 |
+| Python 层 | 加入 Python 可执行文件和标准库 |
+| 依赖层 | 加入 Flask 等第三方依赖 |
+| 应用层 | 加入自己的 `app.py` |
+
+应用层本身不需要再复制 Python 和基础 Linux 文件。Docker 读取时把这些层合并起来，所以在容器中可以同时看到所有层提供的文件。
+
+下面的图同时说明“镜像之间复用”和“容器之间隔离”。箭头表示“在前一份只读内容之上增加自己的变化”，不是文件在运行时沿箭头移动。
+
+```mermaid
+flowchart TB
+    Base[基础 Linux 层] --> Python[Python 运行时层]
+    Python --> Web[Web 应用层]
+    Python --> Worker[Worker 应用层]
+    Web --> ContainerA[容器 A 的可写层]
+    Web --> ContainerB[容器 B 的可写层]
+```
+
+流程从基础层开始：基础 Linux 层提供公共用户态文件，Python 层在其上增加运行时。随后出现两个分支：Web 镜像和 Worker 镜像都复用前两层，但分别保存自己的应用变化。如果已经拉取 Web 镜像，再拉取使用相同基础内容的 Worker 镜像，Docker 可以直接使用本地的基础层和 Python 层，只获取缺失的 Worker 应用层。
+
+从 Web 镜像创建容器 A 和容器 B 时，两者继续共享 Web 镜像的全部只读层，但分支末端各自增加一层独立的可写层。最终每个容器看到的是“公共只读层 + 自己的可写层”合并后的目录树，而不是一份完整镜像副本。
+
+运行时对文件的操作可以这样判断：
+
+| 容器内的操作 | 实际发生的位置 | 是否改变镜像 |
+| --- | --- | --- |
+| 读取 `/usr/bin/python` | 从镜像层读取 | 否 |
+| 新建 `/tmp/result.txt` | 写入本容器可写层 | 否 |
+| 修改镜像自带的 `/app/app.py` | 先复制到可写层，再修改副本 | 否 |
+| 删除镜像自带的文件 | 在可写层记录隐藏标记 | 否，底层原文件仍存在 |
+
+这就是 Copy-on-Write：平时共享只读内容，只有真正修改时才在当前容器的可写层产生副本。删除容器时，这层私人修改也会被删除；另一个基于相同镜像创建的容器完全不受影响。
+
+因此：
+- 同一镜像可以创建多个容器。
+- 每个容器拥有自己的运行配置和可写层。
+- 删除一个容器不会删除镜像，也不会删除其他容器。
+- 容器可写层不适合保存必须持久化的业务数据。
+
+Dockerfile 指令如何产生层、构建缓存如何命中，会在第 2 周展开。
 
 ## 5. `docker run` 到底做了什么
 
@@ -455,7 +492,7 @@ flowchart LR
 - `docker kill` 默认直接强制终止，正常维护应优先 `stop`。
 - `docker rm` 删除容器对象；停止本身不会删除。
 
-关键结论：容器寿命跟主进程绑定。一个 Web 服务如果把工作进程放到后台、入口脚本随后退出，Docker 会认为容器已经停止。
+关键结论：容器寿命跟主进程绑定。这里的主进程是容器内部的 PID 1；一个 Web 服务如果被入口脚本放到后台，而作为 PID 1 的入口脚本随后退出，Docker 就会把容器标记为停止。具体过程见 6.3。
 
 ### 6.2 常用命令的精确差异
 
@@ -471,39 +508,81 @@ flowchart LR
 
 ### 6.3 主进程、PID 1 与信号
 
-Docker 把容器主进程当作生命周期锚点。`docker stop` 默认先发送镜像设置的停止信号，未设置时通常发送 `SIGTERM`，宽限期后仍未退出再发送 `SIGKILL`。
+#### 什么是容器主进程
 
-Linux 中 PID 1 的信号和子进程回收行为比较特殊，因此：
+Docker 根据镜像的 `ENTRYPOINT`、`CMD` 和 `docker run` 末尾指定的命令，启动容器中的第一个进程。这个进程在容器自己的进程编号空间中是 **PID 1**，Docker 把它当作容器生命周期的锚点。
 
-- 应让实际服务进程接收终止信号。
-- Shell 入口脚本通常需要使用 `exec` 把服务替换为 PID 1，或正确转发信号。
-- 强制 `kill` 可能跳过数据库刷盘、连接关闭或临时文件清理。
+主进程不一定是 Docker Daemon，也不表示容器只能有一个进程。例如：
 
-深入理解见 [[Docker容器生命周期]]。
+- `docker run ... java -jar app.jar`：Java 进程可以直接成为 PID 1。
+- 镜像先执行 `/entrypoint.sh`：入口脚本先成为 PID 1，再由它准备环境并启动真正的服务。
+- 主进程可以创建 Worker 等子进程；只要 PID 1 仍在，容器仍可以保持 `Running`。
 
-## 7. Docker 与 OCI 的关系
+> [!note] `entrypoint.sh` 是什么
+> 它是一个普通 Shell 脚本，常被设置为容器启动后首先执行的入口，用来准备环境并启动实际服务；文件名可以自定义，并非 Docker 规定必须叫这个名字。
 
-OCI（Open Container Initiative）维护三类核心规范：
+#### 为什么入口脚本退出会停止容器
 
-- **Image Specification**：镜像清单、配置、层和 Image Index 的格式。
-- **Runtime Specification**：如何根据 bundle/config 创建和运行容器。
-- **Distribution Specification**：Registry 如何通过 API 分发镜像和其他内容。
+下面的图从 `docker run` 开始，对比入口脚本启动 Web 服务时的错误分支与正确分支。判断点不是“容器里是否还出现过其他进程”，而是 PID 1 是否仍然存活。
 
-Docker 使用这些标准实现互操作，但 Docker 还提供 CLI、Daemon、构建、网络、存储、Desktop 和 Compose 等更完整的开发工作流。因此，“OCI 镜像”不等于“只能由 Docker 运行”，而“Docker”也不等于“OCI 规范”。
+```mermaid
+flowchart TD
+    Run[docker run 启动容器] --> Entry[entrypoint.sh 成为 PID 1]
+    Entry --> Choice{入口脚本如何启动 Web 服务}
+    Choice -->|使用 web-server 后台运行且脚本结束| ScriptExit[入口脚本退出即 PID 1 退出]
+    ScriptExit --> Exited[容器进入 Exited]
+    Choice -->|使用 exec 启动前台服务| Replace[Web 服务替换 Shell 并成为 PID 1]
+    Replace --> Alive{Web 服务是否仍在运行}
+    Alive -->|是| Running[容器保持 Running]
+    Alive -->|否| Exited
+```
 
-截至 2026-09-29，OCI 官方 Release Notices 列出的当前发布包括 Image Spec 1.1.1、Runtime Spec 1.3.0、Distribution Spec 1.1.1。这里只用于说明规范仍在演进；日常入门不需要背版本号。
+入口是 `docker run`：Docker 根据镜像配置启动 `entrypoint.sh`，因此脚本最初是 PID 1。随后根据脚本的写法产生两个分支。错误分支把 Web 服务放入脚本后台，然后脚本走到末尾；PID 1 随即退出，Docker 将这次容器运行标记为 `Exited`，其他后台子进程不能代替它维持容器生命周期。正确分支使用 `exec` 启动前台 Web 服务；`exec` 不会再创建一层长期存在的 Shell，而是让 Web 服务替换 Shell 成为 PID 1。只要服务仍存活，容器就是 `Running`；服务正常完成或异常退出时，容器才进入 `Exited`。
 
-## 8. macOS、Windows 与 Linux 的差异
+以 Nginx 为例，先把命令中的几个部分拆开。它们不属于同一层，不能把 `-g` 与 `&` 或 `echo` 当成互相替代的写法：
 
-| 平台 | 常见运行方式 | 初学时最重要的差异 |
+| 写法 | 由谁解释 | 作用 |
 | --- | --- | --- |
-| macOS | Docker Desktop 管理 Linux VM | 容器不是直接运行在 macOS 内核；文件共享和 CPU 架构会影响行为 |
-| Windows | Docker Desktop + WSL 2/其他受支持后端运行 Linux 容器，也可切换 Windows Containers | 必须先明确当前容器模式；PowerShell 路径和 Shell 语法不同 |
-| Linux | Docker Engine 可直接使用 Linux 内核；Docker Desktop 仍使用独立 VM | Engine 与 Desktop 可并存但 context、镜像和容器存储互相独立 |
+| `nginx` | Shell | 启动 Nginx 程序 |
+| `-g 'daemon off;'` | Nginx | `-g` 用来传入全局配置；`daemon off;` 要求 Nginx 不要自行转入后台 |
+| `&` | Shell | 把前面的命令作为后台任务启动，Shell 不等它结束，立即执行下一行 |
+| `echo "Nginx started"` | Shell | 只打印一行文字；打印完就结束，不负责维持容器运行 |
+| `exec` | Shell | 不再创建一个需要 Shell 等待的子进程，而是用 Nginx 替换当前 Shell 进程 |
 
-共同命令如 `docker version`、`docker context ls`、`docker container ls` 基本一致。路径写法、宿主网络实现、文件权限、行尾和挂载性能需要按平台分别验证，不能照抄 Linux 假设。
+为了只比较 `&` 与 `exec`，两个例子应使用完全相同的 Nginx 参数。下面的写法有问题：
 
-## 9. 第一个动手实验
+```sh
+#!/bin/sh
+nginx -g 'daemon off;' &
+```
+
+它按以下顺序执行：
+
+1. Docker 启动 `entrypoint.sh`，Shell 成为容器内的 PID 1。
+2. Shell 启动 Nginx。`daemon off;` 让 Nginx 本身不进行 daemon 化，但行尾的 `&` 又让 Shell 把这个 Nginx 进程当作自己的后台任务。
+3. 因为使用了 `&`，Shell 不等待 Nginx；脚本已经没有下一条命令，于是 Shell 立即退出。
+4. PID 1 退出后，Docker 判定这次容器运行已经结束，容器进入 `Exited`；留下的 Nginx 进程也会随容器停止而被终止。
+
+更适合容器的写法是：
+
+```sh
+#!/bin/sh
+exec nginx -g 'daemon off;'
+```
+
+它的执行过程不同：
+
+1. Shell 最初仍然是 PID 1。
+2. `exec` 用 Nginx 替换 Shell，而不是让 Shell 在后台再启动一个 Nginx。替换完成后，原来的 PID 1 现在就是 Nginx。
+3. `daemon off;` 同时保证 Nginx 不再自行派生一个后台 daemon 后退出；Nginx 会一直占据 PID 1。
+4. 只要 Nginx 还在运行，容器就保持 `Running`；Nginx 退出时，容器才进入 `Exited`。执行 `docker stop` 时，停止信号也能直接送到作为 PID 1 的 Nginx。
+
+
+> [!info] 两种“后台”不要混淆
+> `docker run -d IMAGE` 是让整个容器脱离宿主机当前终端，容器中的 PID 1 仍然运行；入口脚本里的 `command &` 是让某个命令成为脚本的后台子进程。如果脚本随后退出，容器仍会停止。
+
+
+## 7. 第一个动手实验
 
 完整步骤、预期结果、清理和故障处理见 [[Docker环境验证与首个容器]]。核心命令如下：
 
@@ -525,123 +604,7 @@ docker rm docker-basics-hello
 4. `start` 再次运行的是原容器，不创建第二个容器。
 5. `rm` 后容器消失，镜像仍在。
 
-## 10. 常见错误与排查顺序
-
-### 10.1 一个稳定的基础排查顺序
-
-```text
-CLI 是否存在
-  -> Client 能否连接 Server
-  -> 当前 context 是否正确
-  -> 镜像引用与平台是否匹配
-  -> 容器是否创建、状态与退出码是什么
-  -> 日志和 inspect 显示什么
-  -> 最后才考虑删除并重建
-```
-
-| 症状 | 不要先做 | 先检查 |
-| --- | --- | --- |
-| `docker: command not found` | 反复启动 Desktop | CLI 是否安装及 `PATH` |
-| `Cannot connect to the Docker daemon` | 重装整个系统 | Desktop/Daemon、context、socket 权限 |
-| 容器启动后立即退出 | 用无限循环强行保活 | 主进程、退出码、`docker logs` |
-| 名称冲突 | 改成随机名继续堆积 | `docker ps -a` 与原容器是否还需保留 |
-| 拉取失败 | 随意换不可信镜像 | 名称、Tag、登录要求、网络、Daemon 代理 |
-| `exec format error` | 在容器里乱装包 | OS/CPU 架构、镜像平台与入口文件格式 |
-| `permission denied` | `chmod 666` Docker socket | 官方 Rootless/权限方案及访问主体 |
-
-后续专题会把网络、挂载、Compose 和健康检查加入决策树；本阶段先练会保留证据，而不是一失败就 `prune`。
-
-## 11. 安全提醒
-
-- 容器隔离不是与 VM 等价的绝对边界。
-- Docker Daemon 权限很高，不暴露未保护的 API 或 socket。
-- 不用 `--privileged` 作为普通排障开关。
-- 不把宿主机根目录或敏感目录随意挂载进容器。
-- 镜像来自代码执行供应链；使用可信发布者并核对支持平台、维护状态、Tag/Digest 和漏洞信息。
-- 生产环境不依赖浮动 `latest`，也不能仅靠固定 Digest 忽略安全更新。
-- 不在镜像、命令历史或环境变量示例中提交真实密码、Token、私钥。
-- 清理时按名称和项目范围定位；不把 `docker system prune -a --volumes` 当作日常第一选择。
-
-## 12. 动手练习
-
-### 练习 A：画出调用链
-
-不看笔记，画出用户、CLI、API、Daemon、Registry、镜像、containerd/runc、内核和容器进程。每条箭头旁写明“命令请求”“镜像分发”或“进程创建”。
-
-验收：不能把 Registry 画成容器运行节点，不能让 CLI 绕过 Daemon 直接创建进程。
-
-### 练习 B：证明“停止不等于删除”
-
-运行 `hello-world`，使用 `docker container ls` 和 `docker container ls -a` 对比，再用 `docker start --attach` 启动同一个容器。
-
-验收：能解释为什么普通列表看不到但全量列表能看到，以及为什么容器 ID 没变。
-
-### 练习 C：证明“容器不等于镜像”
-
-删除实验容器后分别查询容器和镜像。
-
-验收：容器查询为空，镜像仍在；能解释一个镜像为何可以创建多个容器。
-
-### 练习 D：识别当前运行位置
-
-执行 `docker context show`、`docker context ls` 和 `docker version`。
-
-验收：能说明当前 CLI 连接的是 Docker Desktop、Linux Engine 还是远程 Daemon；Linux 上若 Engine 与 Desktop 并存，能识别 `default` 与 `desktop-linux` 的差别。
-
-## 13. 本章验收标准
-
-- [ ] 能用不超过三句话解释 Docker、镜像和容器。
-- [ ] 能准确区分容器与 VM 的内核关系。
-- [ ] 能区分 Engine、Desktop、CLI 和 Daemon。
-- [ ] 能画出 CLI 到容器进程、Registry 到本地镜像的两条链路。
-- [ ] 能解释 Tag 可变、Digest 不可变，以及二者的更新责任。
-- [ ] 能解释 `run` 与 `start`、`stop` 与 `rm`、`stop` 与 `kill`。
-- [ ] 能完成 [[Docker环境验证与首个容器]] 的所有验证项。
-- [ ] 能精确清理实验资源，不使用全局 prune 命令。
-
-当前环境缺少 Docker，因此最后两项仍待 Harlan 在有 Docker 的机器上完成。
-
-## 14. 小结
-
-1. 容器是被隔离和约束的进程，共享运行它的内核。
-2. 镜像是不运行的只读模板，容器是由镜像创建的实例。
-3. Docker CLI 是客户端，Daemon 才负责执行；Desktop 是包含多组件的桌面产品。
-4. Registry 分发镜像；Repository 组织名称；Tag 易读但可变；Digest 固定内容。
-5. 容器主进程决定运行状态；停止保留容器，删除才移除容器对象。
-6. Docker 提供完整工作流，OCI 提供跨实现规范，两者不是同义词。
-7. 先掌握这些对象边界，后续 Dockerfile、Volume、Network 和 Compose 才不会变成死记命令。
-
-## 15. 自测题
-
-1. 为什么说“容器是进程”比“容器是轻量虚拟机”更准确？
-2. macOS 上运行 Linux 容器时，Linux 内核来自哪里？
-3. `docker --version` 成功，能否证明容器一定可以运行？
-4. Docker Engine、Docker Daemon 与 Docker Desktop 分别是什么？
-5. 为什么同一镜像可以创建多个互不相同的容器？
-6. `docker run nginx` 与 `docker start old-nginx` 的本质区别是什么？
-7. 一个容器显示 `Exited (0)` 一定是故障吗？
-8. 删除容器后，为什么镜像通常还在？
-9. `latest` 为什么不能作为“永远最新且稳定”的保证？
-10. Digest 固定了内容，为什么仍需设计更新流程？
-11. Docker CLI 为什么能控制远程机器上的容器？
-12. 把 Docker socket 挂进不可信容器为何危险？
-
-## 16. 答案与解析
-
-1. 容器最终由内核调度为进程，只是附带 namespaces、cgroups、文件系统和安全配置；它没有独立 Guest OS 内核。
-2. 通常来自 Docker Desktop 管理的 Linux VM，容器共享的是该 VM 的 Linux 内核。
-3. 不能。它只证明 CLI 可执行；还要用 `docker version` 验证 Server，并核对 context。
-4. Engine 是核心容器引擎；Daemon 是其长期运行的服务端进程；Desktop 是集成 Engine、CLI、Compose、GUI 等的桌面产品。
-5. 镜像层只读且可复用；每次创建容器都会生成独立运行配置、状态和可写层。
-6. `run` 创建并启动新容器；`start` 只启动一个已经存在的停止容器。
-7. 不一定。退出码 0 通常表示主进程正常完成；短任务本来就应该退出。
-8. 容器和镜像是不同对象；`docker rm` 删除容器配置与可写层，不默认删除镜像。
-9. `latest` 只是省略 Tag 时的默认名称，维护者可以让它指向不同内容，没有版本比较语义。
-10. 固定 Digest 不会自动获取安全修复；团队仍需评估新镜像、更新 Digest、测试并部署。
-11. CLI 通过 Docker API 与 context 指定的 Daemon 通信，Daemon 可以位于本地或远程。
-12. Docker API 能创建高权限容器、挂载宿主机目录等；控制 socket 通常意味着获得非常高的主机控制能力。
-
-## 17. 来源
+## 8. 来源
 
 - [Docker：What is Docker?](https://docs.docker.com/get-started/docker-overview/) — 平台、架构、对象定义。
 - [Docker：What is a container?](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/) — 容器与 VM 的入门模型。
@@ -652,10 +615,6 @@ CLI 是否存在
 - [Docker CLI：image pull](https://docs.docker.com/reference/cli/docker/image/pull/) — Tag、Digest 和内容寻址。
 - [Docker Engine security](https://docs.docker.com/engine/security/) — namespaces、cgroups 与 Daemon 攻击面。
 - [Moby Project](https://github.com/moby/moby) — Moby 与 Docker Engine 的关系。
-- [OCI Image Specification](https://github.com/opencontainers/image-spec) — 镜像格式。
-- [OCI Runtime Specification](https://github.com/opencontainers/runtime-spec) — 容器配置与生命周期。
-- [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec) — Registry 分发 API。
-
 ## 相关
 
 - [[Docker学习路径]] — 四周顺序、任务和完成标准

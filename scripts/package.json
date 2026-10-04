@@ -1,0 +1,8 @@
+{
+  "name": "harlan-wiki-tools",
+  "private": true,
+  "description": "Local webpage extraction dependency for the defuddle skill",
+  "dependencies": {
+    "defuddle": "0.19.4"
+  }
+}

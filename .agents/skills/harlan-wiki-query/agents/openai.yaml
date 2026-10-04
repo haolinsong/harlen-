@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harlan · 知识问答"
+  short_description: "从知识索引定位相关内容，回答问题并持续补充已有主题学习笔记"
+  default_prompt: "请使用 $harlan-wiki-query 回答我的学习问题，并将新结论整合到已有主题页。"

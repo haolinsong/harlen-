@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harlan · 来源摄入"
+  short_description: "按本库规则摄入外部来源与个人记录，并整合到已有主题复习笔记"
+  default_prompt: "请使用 $harlan-wiki-ingest 摄入我提供的资料，按项目规则更新相关页面。"
