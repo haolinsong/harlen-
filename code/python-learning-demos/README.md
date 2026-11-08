@@ -1,7 +1,7 @@
 # Python Learning Demos
 
 这是一个面向 Python 新手的可运行示例项目。学习主题参考
-[jackfrued/Python-100-Days](https://github.com/jackfrued/Python-100-Days) 的 Day01-20，
+[jackfrued/Python-100-Days](https://github.com/jackfrued/Python-100-Days) 的知识顺序，
 示例代码、注释和练习均为本项目重新编写。
 
 项目目标不是堆积语法，而是让每个知识点都有一个小程序可以运行、修改和观察。
@@ -9,7 +9,7 @@
 ## 环境要求
 
 - Python 3.10 或更高版本，因为 Day05 会演示 `match/case`。
-- Day01-20 只使用 Python 标准库，不需要安装第三方依赖。
+- Day01-26、Day30-40 及 Day27-29 的底层结构示例只用标准库；Day27-29 的 5 个 Office、PDF、Pillow 实操 Demo 需要额外依赖。
 - 当前电脑已验证的解释器是 `/opt/homebrew/bin/python3`，版本为 Python 3.14.7。
 
 先确认解释器版本：
@@ -48,6 +48,16 @@ which python
 cd "/Users/sjj/learn/codex知识库/Harlan的第二大脑/code/python-learning-demos"
 source .venv/bin/activate
 ```
+
+首次运行 Day27-29 的第三方库实操示例或 `--all` 前，在已激活的项目虚拟环境中安装：
+
+```bash
+python -m pip install -r requirements-docs.txt
+```
+
+依赖版本记录在 [`requirements-docs.txt`](requirements-docs.txt)，包含 `openpyxl`、
+`python-docx`、`python-pptx`、`Pillow`、`reportlab` 和用于读回验证的 `pypdf`。
+这一步只安装到当前 `.venv`，不需要邮件或短信服务账号。
 
 学习结束后退出虚拟环境：
 
@@ -130,7 +140,7 @@ python -m unittest discover -s tests -v
 
 不要急着背语法。能够预测程序下一行输出什么，比记住所有 API 更重要。
 
-## 01-20 目录导航
+## 01-40 目录导航
 
 | 目录 | Demo |
 | --- | --- |
@@ -154,6 +164,61 @@ python -m unittest discover -s tests -v
 | `18-类与对象` | `class_basics`、`clock`、`point` |
 | `19-面向对象进阶` | `properties`、`class_and_static_methods`、`inheritance` |
 | `20-面向对象综合项目` | `poker_game`、`payroll_system` |
+| `21-文件与路径` | `text_files`、`binary_files`、`pathlib_paths` |
+| `22-异常与上下文管理` | `exception_handling`、`custom_exceptions`、`context_managers` |
+| `23-JSON与CSV` | `json_basics`、`csv_basics`、`score_report` |
+| `24-正则表达式` | `regex_basics`、`regex_search`、`text_cleanup` |
+| `25-邮件消息` | `email_message`、`csv_attachment` |
+| `26-数据清洗与报告` | `weekly_report` |
+| `27-Excel与电子表格` | `excel_compatible_csv`、`xlsx_package`、`openpyxl_report` |
+| `28-Word与PowerPoint` | `docx_package`、`pptx_structure`、`word_report`、`powerpoint_deck` |
+| `29-PDF与图像基础` | `minimal_pdf`、`ppm_pixels`、`reportlab_pdf`、`pillow_image` |
+| `30-本地通信模拟` | `email_transport`、`sms_request` |
+| `31-迭代器与生成器` | `iterator_protocol`、`generator_pipeline` |
+| `32-数据类与模式匹配` | `dataclass_models`、`structural_matching` |
+| `33-迭代工具` | `itertools_grouping` |
+| `34-线程并发` | `thread_pool`、`thread_lock` |
+| `35-异步任务` | `asyncio_gather` |
+| `36-搜索与排序` | `search_sort` |
+| `37-进程与环境变量` | `subprocess_environment` |
+| `38-SQLite基础` | `sqlite_crud` |
+| `39-关联查询与索引` | `join_and_index` |
+| `40-事务与数据库项目` | `transactions`、`csv_to_database` |
+
+Day21-23 的文件示例使用 `TemporaryDirectory` 创建临时工作区，运行结束后会自动清理，
+不会在项目目录中留下练习数据。成绩报告示例把 CSV 读取、数据校验、异常处理和 JSON
+输出串成一个小型数据处理流程。
+
+Day24-26 继续用固定示例输入：先用正则表达式检查编号、查找文本并清理空白，
+再用 `EmailMessage` 构造和解析邮件，最后把 CSV 清洗结果写入邮件草稿正文并附上原始 CSV。
+示例只在本地构造邮件对象，不连接邮件服务器。
+
+可以从这三个入口依次练习：
+
+```bash
+python run_demo.py 24-正则表达式/01_regex_basics.py
+python run_demo.py 25-邮件消息/02_csv_attachment.py
+python run_demo.py 26-数据清洗与报告/01_weekly_report.py
+```
+
+Day27-29 的前两个示例保留零依赖的格式原理练习：CSV、XLSX/DOCX 的 ZIP/XML 结构、
+PowerPoint 的 XML 片段，以及最小 PDF 和 PPM。`pptx_structure` 只生成片段，**不是完整 PPTX**。
+安装上述依赖后，可继续运行 5 个真实库实操：生成并读回含数字与公式的 XLSX、含表格的 DOCX、
+双页 PPTX、一页 PDF 和 PNG 色卡。文件都写入临时目录，运行结束自动清理。
+PDF 实操暂用 ASCII 文本；中文排版需先配置中文字体。`openpyxl` 能写公式，但不会替你计算结果。
+Day30 的邮件与短信仍只在本地模拟发送，不连接外部服务。
+
+Day31-40 练习迭代器、生成器、数据类、模式匹配、线程、异步任务、搜索排序、子进程，最后使用
+内存 SQLite 学习 SQL、JOIN、索引和事务。SQLite 是本地教学数据库，**不是 MySQL 实操**；
+Day41-45 仍保留 Linux 与 MySQL 的后续路线。可以从这些入口开始：
+
+```bash
+python run_demo.py 27-Excel与电子表格/02_xlsx_package.py
+python run_demo.py 27-Excel与电子表格/03_openpyxl_report.py
+python run_demo.py 28-Word与PowerPoint/04_powerpoint_deck.py
+python run_demo.py 31-迭代器与生成器/02_generator_pipeline.py
+python run_demo.py 40-事务与数据库项目/02_csv_to_database.py
+```
 
 ## 目录结构
 
@@ -163,11 +228,13 @@ python-learning-demos/
 ├── docs/              # 后续 Day21-100 路线图
 ├── tests/             # 冒烟测试和关键逻辑测试
 ├── run_demo.py        # Demo 列表与统一运行入口
+├── requirements-docs.txt # Day27-29 实操依赖
 └── pyproject.toml     # Python 版本和工具配置
 ```
 
 ## 后续路线
 
-Day21-100 暂时只建立路线，不提前引入大量依赖。完成基础阶段后，再依次增加文件处理、
-数据库、Web 开发、数据分析、机器学习和自动化测试。详见
+Day01-40 共 90 个可独立运行的 Demo，配套 46 项逻辑测试和 1 项全量冒烟测试。
+Day41-100 继续按小批次推进；中文 PDF 排版、MySQL、Web 开发、数据分析、
+机器学习和综合项目仍在后续路线中。详见
 [`docs/learning-roadmap.md`](docs/learning-roadmap.md)。

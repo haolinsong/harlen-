@@ -4,7 +4,7 @@ type: output
 tags: [容器/Docker, 基础]
 aliases: [Docker 核心学习笔记, Docker核心学习笔记, Docker基础学习笔记, Docker核心概念, Docker入门笔记]
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-11-06
 related: ["[[Docker]]", "[[容器与虚拟机]]", "[[Docker架构]]", "[[Docker镜像与容器]]", "[[Docker容器生命周期]]", "[[Docker环境验证与首个容器]]", "[[Docker学习路径]]"]
 ---
 
@@ -56,17 +56,14 @@ docker compose version
 | `docker version` | 客户端是否能连接容器引擎 | 同时显示 **Client** 与 **Server** 部分 |
 | `docker compose version` | Compose 插件是否可用 | 显示 Compose 版本 |
 
-版本号以实际安装结果为准，不必与笔记中的发行说明完全相同。尤其要检查 `docker version`：只有 Client、没有 Server，说明还没有完成引擎连接验证。
 
 #### 每次使用 Docker 都要打开 Docker Desktop 吗
 
-在 Mac 上使用 Docker Desktop 提供的本地 Engine 时，**Docker Desktop 必须处于运行状态**，但不需要一直打开 Dashboard 窗口，也不需要在每条 `docker` 命令之前重复启动它。
+在 Mac 上使用 Docker Desktop 提供的本地 Engine 时，**Docker Desktop 必须处于运行状态**。
 
 可以这样理解：
-
 - Docker CLI 是遥控器，Docker Desktop 中的 Engine 是实际工作的机器；只有遥控器、没有运行中的 Engine，无法创建或管理本地容器。
 - 关闭终端不会停止以 `-d` 方式运行的容器，因为容器由 Engine 管理。
-- 关闭 Docker Desktop 的 Dashboard 窗口通常不等于退出应用；菜单栏中的 Docker 图标仍显示 Engine 正在运行即可。
 - 真正退出 Docker Desktop 会停止本地 Engine，后台容器也不能继续运行。再次启动 Desktop 后，容器是否自动启动取决于它的 restart policy；默认不会自动恢复运行。
 - `docker run -d` 中的 `-d` 只表示容器与当前终端分离，不表示它能够脱离 Docker Engine 或 Docker Desktop 独立运行。
 
@@ -91,12 +88,6 @@ docker desktop start
 
 不需要形成“每次关机都先停止全部容器，再退出 Docker Desktop”的固定动作。正常关闭 Mac 时可以让系统退出 Docker Desktop；但如果正在运行数据库、消息队列或会持续写数据的应用，推荐先按项目优雅停止，让进程有机会刷新数据和完成清理。
 
-按下面三种情况处理：
-
-- **没有运行中的容器**：可以直接正常关机。
-- **一次性的无状态学习容器**：通常可以直接正常关机；若希望下次状态清晰，也可以先停止它。
-- **数据库或 Compose 多服务项目**：先在项目目录执行 `docker compose stop`，确认停止后再正常关机。
-
 推荐的关机前检查流程：
 
 ```bash
@@ -120,10 +111,6 @@ docker compose down
 ```
 
 普通 `docker compose down` 默认不会删除命名 Volume；**不要随意添加 `-v`**，因为 `docker compose down -v` 会删除项目 Volume，其中的数据库数据可能永久丢失。
-
-完成上述停止后，可以直接正常关闭 Mac；没有必要再把“手动退出 Docker Desktop”作为强制步骤。如果想完全确认 Desktop 已停止，也可以从菜单退出，但这只是可选操作。不要使用 `docker stop $(docker ps -q)` 作为日常关机流程，因为它会停止当前 Engine 中所有项目的容器；也不要执行 `docker system prune`，它属于资源清理而不是关机步骤。
-
-官方行为说明：[docker stop](https://docs.docker.com/reference/cli/docker/container/stop/) 会先给进程优雅退出机会；[docker compose stop](https://docs.docker.com/reference/cli/docker/compose/stop/) 停止但保留容器；[docker compose down](https://docs.docker.com/reference/cli/docker/compose/down/) 会移除项目容器和网络，只有增加 `-v` 才会进一步删除 Volume。
 
 ### 0.3 运行第一个容器
 
@@ -155,12 +142,14 @@ docker ps -a
 
 # 只统计正在运行的容器数量（macOS/Linux）
 docker ps -q | wc -l
-
-# 统计全部仍然存在的容器数量（macOS/Linux）
-docker ps -aq | wc -l
 ```
 
-`docker ps` 与 `docker container ls` 等价；`-q` 只输出容器 ID，便于计数。由于 `hello-world` 主进程很快退出，而且本次使用了 `--rm`，命令结束后它通常不会出现在 `docker ps` 或 `docker ps -a` 中。
+
+> [!note] 参数与管道
+> **`-a`（`--all`）**：列出全部仍然存在的容器；不写它时，默认只列出正在运行的容器。
+>
+> **`-q`（`--quiet`）**：不显示详细表格，只让 `docker ps` 每行输出一个容器 ID。
+
 
 #### 如何关闭一个容器
 
@@ -249,23 +238,6 @@ docker rm web-demo
 
 常见参数：`-d` 表示后台运行，`--name` 指定容器名，`-p 主机端口:容器端口` 发布端口，`-it` 启用交互式终端，`--rm` 表示容器退出后自动删除。
 
-
-### 0.5 安装验收
-
-- [x] `brew install --cask docker` 安装成功，Docker Desktop 能正常启动。
-- [x] `docker version` 同时显示 Client 和 Server。
-- [x] `docker compose version` 能返回版本。
-- [x] `docker run --rm hello-world:latest` 输出欢迎信息并正常结束。
-
-以后开始学习前先确保 Docker Desktop 的 Engine 处于运行状态，再打开终端执行命令。关闭终端通常不会停止后台容器；退出 Docker Desktop 会影响它管理的本地容器环境。
-
-
-
-> [!info] 资料基线
-> 本页根据 2026-09-29 访问的 Docker 官方文档、CLI reference 和 Moby 项目资料编写。当天 Docker Desktop 最新发行说明为 4.93.0；概念不依赖单一补丁版本，实际安装要求和组件版本应以官方当前页面为准。
-
-> [!question] 运行验证状态
-> 2026-09-30 已确认 Docker CLI 29.8.1 能连接 Docker Desktop 4.93.0 的 Engine 29.8.1，并实际运行了第二阶段构建与存储实验。本页的首容器完整验证步骤集中在 [[Docker环境验证与首个容器]]。
 
 ## 一句话结论
 

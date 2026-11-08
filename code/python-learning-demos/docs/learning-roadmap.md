@@ -11,25 +11,50 @@
 
 ## 阶段二：Day21-30 Python 语言应用
 
-计划内容：
+当前进度：Day21-30 均有可独立运行的示例；Day27-29 的实操示例需要安装项目依赖。
 
-- 文本、二进制文件和上下文管理器。
-- 异常处理与自定义异常。
-- JSON、CSV、Excel、Word、PowerPoint 和 PDF。
-- Pillow 图像处理。
-- 邮件、短信和正则表达式。
+已完成：
 
-验收项目：批量读取 CSV，生成统计结果、Excel 报表和邮件附件。
+- Day21：文本文件、二进制文件、UTF-8 编码、`pathlib` 与临时目录。
+- Day22：`try/except/else/finally`、主动抛出异常、自定义异常与上下文管理器。
+- Day23：JSON、CSV、字段类型转换，以及 CSV 生成 JSON 成绩报告的小项目。
+- Day24：正则表达式的完整匹配、查找、位置与文本替换。
+- Day25：用 `EmailMessage` 构造、解析邮件消息，并附加 UTF-8 CSV。
+- Day26：清洗 CSV、聚合学习时长，并生成带原始数据附件的本地邮件草稿。
+
+Day27-30 已实现的标准库基础内容：
+
+- Day27：电子表格兼容 CSV、UTF-8 BOM、文本单元格保护，以及 XLSX 的最小 ZIP/XML 结构。
+- Day28：最小 DOCX 的段落写入和读回；PowerPoint 幻灯片 XML 结构片段（不是完整 PPTX）。
+- Day29：一页 ASCII PDF 的生成、验证和渲染；PPM 像素图与最近邻缩放（不是 Pillow 实操）。
+- Day30：邮件传输替身、短信请求构造与本地网关模拟；不执行网络发送。
+
+Day27-29 在基础内容后补充了 5 个第三方库实操：`openpyxl` 写含公式的 XLSX，`python-docx`
+写 DOCX 表格，`python-pptx` 写完整双页 PPTX，ReportLab 写 PDF，Pillow 创建并缩放 PNG。
+每个实操都重新打开文件检查内容；依赖见项目 `requirements-docs.txt`，已安装在项目 `.venv`。
+其中 `openpyxl` 不计算公式，PDF 示例仅排版 ASCII；中文 PDF 仍需配置字体。Day30 仍不连接
+真实邮件或短信服务，也不使用账号和密钥。
+
+阶段验收项目：已能读取 CSV、生成统计结果和邮件附件，且能生成并读回 Excel 报表、Word 文档、
+PowerPoint 演示文稿、PDF 和 PNG 图像。真实邮件与短信发送不在本阶段验收范围内。
 
 ## 阶段三：Day31-45 进阶语法、Linux 与数据库
 
-计划内容：
+Day31-40 已实现：
 
-- 迭代器、生成器、并发编程和常用算法。
-- Linux 命令、文件系统、进程和环境变量。
-- MySQL、SQL、索引、事务以及 Python 数据库访问。
+- Day31-33：迭代器、生成器、数据类、结构化模式匹配与 `itertools.groupby`。
+- Day34-35：线程池、锁和 `asyncio.gather` 的本地等待型示例。
+- Day36-37：二分查找、稳定排序、子进程及环境变量。
+- Day38-40：内存 SQLite 的增删改查、参数绑定、外键、JOIN、索引、事务回滚与 CSV 整批导入。
 
-验收项目：从数据库读取业务数据，完成清洗和导出，并能解释事务提交与回滚。
+Day41-45 计划内容：
+
+- 补充 Linux 命令、文件系统与进程的真实终端练习。
+- 在明确安装与账号配置后，连接 MySQL，对照 SQLite 的 SQL、索引和事务行为。
+- 补充数据库访问与导出的小项目。
+
+阶段验收项目：当前已能将 CSV 数据事务性导入 SQLite，并解释提交与回滚；
+从 MySQL 读取业务数据、清洗与导出尚未完成。
 
 ## 阶段四：Day46-65 Web 开发
 

@@ -912,3 +912,85 @@ sources: []
 - 语法：不把 `would he` 简单归为将来时；它常用于假设、意愿或过去视角的将来。
 - 核查：参考 Cambridge Dictionary 的 `he` 强弱式及 `was`、`does`、`has`、`will`、`would` 读音，访问日期为 2026-10-04。
 - 更新：[[英语发音学习笔记]]、[[英语发音与重音]]、本文件；[[index]] 摘要仍然准确，无需修改；未修改 `raw/` 或 Speaking 文档。
+
+## [2026-10-10] query | 助动词加 I 的连读与弱读
+
+- 内容：在 [[英语发音学习笔记]] 新增“助动词 + `I`”小节，整理 `did/do/was/have/am/will/would + I` 七个组合的中文意思、美式日常读法和练习例句。
+- 原理：`I /aɪ/` 不发生 `he` 的 `/h/` 脱落；辅音结尾直接衔接 `/aɪ/`，`do I /du‿aɪ/` 的元音间则常出现轻微 `[w]` 过渡。
+- 弱读：非强调语流采用 `was /wəz/`、`have /həv/`、`am /əm/`、`will /wəl/`、`would /wəd/`；强调时可以恢复完整元音。
+- 美式语流：`did I`、`would I` 中的 `/d/` 可能实现为闪音 `[ɾ]`，但宽式练习音标仍保留基础音位 `/d/`。
+- 核查：参考 Cambridge Dictionary 的七个助动词和 `I` 词条，以及 U.S. Department of State 对元音间滑音的说明，访问日期为 2026-10-10。
+- 更新：[[英语发音学习笔记]]、[[英语发音与重音]]、本文件；[[index]] 摘要仍然准确，无需修改；未修改 `raw/` 或 Speaking 文档。
+
+## [2026-10-10] query | 助动词加 her 的弱读与语法边界
+
+- 内容：在 [[英语发音学习笔记]] 新增“助动词 + `her + 名词`”小节，整理 `did/do/does/was/is/have/has/will/would/can + her` 的美式日常读法、中文意思和练习例句。
+- 语法：`her` 不能像主格 `she` 一样单独充当疑问句主语；本组中的 `her` 表示“她的”，后面必须接名词，例如 `Did her flight leave?`。表达“她打电话了吗？”应说 `Did she call?`，不能说 `Did her call?`。
+- 发音：美式 `her` 的强式为 `/hɝː/`，弱式可为 `/hɚ/` 或省略 `/h/` 的 `/ɚ/`；当前跟读表采用自然、非强调语流中常见的 `/ɚ/`，并将非强调助动词 `do`、`does` 分别记作 `/də/`、`/dəz/`，但不把任何弱化写成强制规则。
+- 细节：助动词形式须与 `her` 后面的名词配合，如复数 `Do her parents...?`、`Have her friends...?`，单数 `Does her brother...?`、`Has her order...?`；`did her` 的 `/d/` 在快速美语中还可能实现为闪音 `[ɾ]`。
+- 核查：参考 Cambridge Dictionary 的 `her` 强弱式和语法身份，以及 British Council、VOA Learning English 对连续语流中 `/h/` 脱落的说明，访问日期为 2026-10-10。
+- 更新：[[英语发音学习笔记]]、[[英语发音与重音]]、本文件；[[index]] 摘要仍然准确，无需修改；未修改 `raw/` 或 Speaking 文档。
+
+## [2026-10-11] query | prevent 与 prevalent 的词性重音对照
+
+- 内容：在 [[英语发音学习笔记]] 新增单词重音小节，以动词 `prevent /prɪˈvent/` 和形容词 `prevalent /ˈprev.əl.ənt/` 对照第二音节与第一音节重音，并补充自然例句。
+- 规律：记录“双音节名词、形容词常重读前面；双音节动词常重读后面”的预测线索，但明确它不是无例外规则。
+- 边界：`prevent` 是双音节词，`prevalent` 是三音节词，而且二者不是同一个词改变词性后的重音交替；这组词只作为实际读音对照，不能单独证明普遍规律。
+- 核查：参考 Cambridge Dictionary 的两个词条及 British Council 的 word stress 教学资料，访问日期为 2026-10-11。
+- 更新：[[英语发音学习笔记]]、[[英语发音与重音]]、本文件；[[index]] 摘要仍然准确，无需修改；未修改 `raw/` 或 Speaking 文档。
+
+## [2026-10-11] query | premium 的发音与重音规律边界
+
+- 内容：将名词、形容词 `premium /ˈpriː.mi.əm/` 加入 [[英语发音学习笔记]] 的词性重音对照表，记录第一音节 `/priː/` 为主重音，并补充 `We chose the premium plan.` 作为例句。
+- 判断：`premium` 作名词和形容词时读音相同，都是三音节词；实际重音位置与“名词、形容词常前重音”的方向一致，但不属于主要针对双音节词的规律，因此不能视为直接验证。
+- 核查：参考 Cambridge Dictionary 的美式音标、词性和例句，访问日期为 2026-10-11。
+- 更新：[[英语发音学习笔记]]、[[英语发音与重音]]、本文件；[[index]] 摘要仍然准确，无需修改；未修改 `raw/` 或 Speaking 文档。
+
+## [2026-10-21] query | Python Day21-23 文件、异常与结构化数据
+
+- 内容：为 `code/python-learning-demos/` 新增 Day21-23 共 9 个独立 Demo，覆盖文本与二进制文件、`pathlib`、异常处理、自定义异常、上下文管理器、JSON、CSV 和 CSV 生成 JSON 成绩报告。
+- 约束：全部使用 Python 标准库；文件示例通过临时目录运行，不在项目中遗留练习数据；未安装第三方依赖，未修改 `raw/`。
+- 测试：新增 7 项逻辑测试；Python 3.14.7 下共 16 项逻辑测试和 1 项全量冒烟测试通过，`run_demo.py --all` 成功运行全部 57 个 Demo。
+- 更新：[[Python基础学习实战]]、项目 README、学习路线、[[index]] 与本文件。
+
+## [2026-10-24] query | Python Day24-26 正则表达式与邮件报告
+
+- 内容：为 `code/python-learning-demos/` 新增 Day24-26 共 6 个独立 Demo，覆盖正则表达式完整匹配、查找与替换，邮件对象和 UTF-8 CSV 附件，以及 CSV 清洗、聚合和本地邮件报告草稿。
+- 来源：核对 Python 3.14 官方 `re` 与 `email.message` 文档，访问日期 2026-10-24；示例全部使用标准库。
+- 测试：新增 4 项关键逻辑测试；Python 3.14.7 下共 20 项逻辑测试和 1 项全量冒烟测试通过，`run_demo.py --all` 成功运行全部 63 个 Demo。
+- 更新：[[Python基础学习实战]]、项目 README、学习路线、[[index]] 与本文件；未修改 `raw/`。
+
+## [2026-10-24] query | Python 后续内容与批次估算
+
+- 进度：按现有 Day01-100 路线核对，已实现 Day01-26；当前语言应用阶段还剩 Day27-30 共 4 个规划日，完整路线还剩 74 个规划日。
+- 估算：按每批 2～3 个规划日、且不跨阶段计算，当前阶段还需 2 批，完整路线预计还需 27～36 批；实际批次随主题复杂度和外部依赖条件调整。
+- 更新：在 [[Python基础学习实战]] 中记录计算前提与范围；[[index]] 摘要仍然准确，无需修改。
+
+## [2026-10-24] query | Python Day27-40 零依赖应用与数据库学习
+
+- 内容：新增 Day27-40 共 22 个独立 Demo，覆盖电子表格与 Office 文件结构、PDF 与像素、通信本地模拟、迭代器与生成器、并发、算法、进程环境、SQLite 查询、索引和事务。
+- 边界：只使用 Python 标准库；PowerPoint 是结构片段而非完整 PPTX，PPM 不等于 Pillow，通信不联网，SQLite 不等于 MySQL；完整第三方实操与外部账号配置留待明确后扩展。
+- 验证：Python 3.14.7 下，41 项逻辑测试和 1 项全量冒烟测试通过，`run_demo.py --all` 成功运行全部 85 个 Demo；最小 PDF 经 `pdfinfo` 确认一页并渲染目视检查。
+- 更新：[[Python基础学习实战]]、项目 README、学习路线、[[index]] 与本文件；未安装第三方依赖，未修改 `raw/`。
+
+## [2026-10-24] query | Python Day27-29 Office、PDF 与 Pillow 实操
+
+- 内容：在原有底层结构教学版之后增加 5 个独立 Demo，分别用 `openpyxl`、`python-docx`、`python-pptx`、ReportLab、Pillow 生成并读回 XLSX、DOCX、PPTX、PDF、PNG；保留原有示例与目录命名。
+- 环境：经 Harlan 同意，仅在项目 `.venv` 安装对应依赖及读回 PDF 所需的 `pypdf`，并新增 `requirements-docs.txt` 记录版本；不安装到系统 Python。
+- 边界：Excel 公式不由 `openpyxl` 计算；PDF 示例只排版 ASCII；邮件与短信继续本地模拟，不连接外部服务或账号。
+- 验证：Python 3.14.7 下，46 项逻辑测试和 1 项全量冒烟测试通过，`run_demo.py --all` 成功运行全部 90 个 Demo。`scripts/lint.py` 仍报告 3 个既有无关错误及 1 个警告，未改动其对应页面。
+- 更新：[[Python基础学习实战]]、项目 README、学习路线、[[index]] 与本文件；未修改 `raw/`。
+
+## [2026-11-01] query | Docker 第四阶段网络与容器通信
+
+- 内容：新增 [[Docker网络]] 与 [[04-Docker网络与容器通信]]，解释网络命名空间、自定义 bridge、Docker DNS、三个 `localhost`、端口发布、`EXPOSE` 和 `host.docker.internal`。
+- 实验：提供 Nginx 与临时 Alpine 容器的名称通信实验，覆盖网络创建、容器加入、Mac 端口访问、网络检查和精确清理；Compose 留到下一阶段。
+- 来源：核对 Docker 官方 Networking overview、Port publishing、Docker Desktop networking、Dockerfile `EXPOSE` 与 network CLI 文档，访问日期 2026-11-01。
+- 验证：本机 Docker CLI 29.8.1、context 为 `desktop-linux`，但 Engine socket 不可用，因此仅完成资料核验与命令静态检查，没有声称容器已经实际运行。
+- 更新：[[Docker学习路径]]、[[index]] 与本文件；未修改 `raw/`，并避开现有 Python 与英语未提交修改。
+
+## [2026-11-06] query | 区分 Docker 容器列表与数量统计
+
+- 解释：`docker ps -a` 输出全部现存容器的详细表格；`docker ps -aq | wc -l` 在相同范围上只输出容器 ID，再按行统计为一个数字。
+- 参数：补充 `-a`、`-q`、管道 `|` 与 `wc -l` 的作用，并说明统计命令末尾不应保留 Shell 续行反斜杠。
+- 核查：使用本机 Docker CLI 29.8.1 的 `docker ps --help` 核对参数；更新 [[01-Docker核心学习笔记]]，索引摘要无需修改。
